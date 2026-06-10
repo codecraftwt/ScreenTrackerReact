@@ -1,0 +1,107 @@
+.screenshot-details {
+    font-family: 'Comfortaa';
+    color: var(--hs-text-primary);
+}
+
+.screenshot-details-back {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.screenshot-details-image-wrap {
+    position: relative;
+}
+
+.screenshot-details-image {
+    max-width: 80%;
+    height: auto;
+    border: 1px solid var(--hs-border-default);
+    background-color: var(--hs-bg-surface);
+    border-radius: 4px;
+    padding: 4px;
+    cursor: default;
+}
+
+.screenshot-details-image:hover {
+    transform: none;
+}
+
+.screenshot-details-nav {
+    background-color: transparent !important;
+    border: none !important;
+    color: var(--hs-text-muted) !important;
+    font-size: 2.5rem;
+    z-index: 10;
+    transition: color 0.3s ease-in-out, transform 0.3s ease-in-out, text-shadow 0.3s ease-in-out;
+    text-shadow: none;
+}
+
+.screenshot-details-nav:hover:not(:disabled) {
+    color: var(--hs-primary) !important;
+    transform: scale(1.1);
+}
+
+.screenshot-details-nav:focus-visible {
+    color: var(--hs-primary) !important;
+    box-shadow: var(--hs-focus-ring) !important;
+}
+
+.screenshot-details-nav:active:not(:disabled) {
+    color: var(--hs-primary-active) !important;
+    transform: scale(1.04);
+}
+
+.screenshot-details-nav:disabled {
+    color: var(--hs-text-disabled) !important;
+    cursor: not-allowed;
+    text-shadow: none;
+}
+
+.screenshot-details-activity-scroll {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.screenshot-details .card {
+    background-color: var(--hs-bg-card);
+    border-color: var(--hs-border-default);
+    color: var(--hs-text-primary);
+}
+
+.screenshot-details .card-header,
+.screenshot-details .card-header-background {
+    background-color: var(--hs-bg-surface) !important;
+    border-color: var(--hs-border-default);
+    color: var(--hs-text-primary);
+}
+
+.screenshot-details .card-title,
+.screenshot-details strong {
+    color: var(--hs-text-primary);
+}
+
+.screenshot-details p,
+.screenshot-details .card-body {
+    color: var(--hs-text-secondary);
+}
+
+.screenshot-details .table {
+    color: var(--hs-text-primary);
+    border-color: var(--hs-border-default);
+}
+
+.screenshot-details .table th {
+    background-color: var(--hs-bg-table-header);
+    color: var(--hs-text-secondary);
+    border-color: var(--hs-border-default);
+}
+
+.screenshot-details .table td {
+    background-color: var(--hs-bg-table);
+    color: var(--hs-text-primary);
+    border-color: var(--hs-border-default);
+}
+
+.screenshot-details .text-danger {
+    color: var(--hs-error) !important;
+}

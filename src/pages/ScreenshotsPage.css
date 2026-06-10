@@ -1,0 +1,1561 @@
+﻿@import url('app.css');
+
+#DashboardactivityDate::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+}
+
+
+#DashboardactivityDate::-moz-calendar-picker-indicator {
+    display: none;
+}
+
+
+.screenshot-item {
+    padding: 10px;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.image-container {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    border-radius: 5px;
+    box-shadow: var(--hs-shadow-sm);
+}
+
+.screenshot-image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out;
+}
+
+    .screenshot-image:hover {
+        transform: scale(1.03);
+    }
+
+.screenshot-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 10px;
+    gap: 5px;
+}
+
+.block {
+    width: 10px;
+    height: 7px;
+    background-color: var(--hs-border-light);
+    border-radius: 2px;
+}
+
+    .block.active {
+        background-color: var(--hs-success);
+    }
+
+.delete-btn {
+    border: none;
+    background-color: transparent;
+    color: var(--hs-error);
+    cursor: pointer;
+    transition: color 0.2s ease-in-out;
+}
+
+    .delete-btn:hover {
+        color: var(--hs-error);
+        opacity: 0.8;
+    }
+
+.container {
+    font-family: 'Comfortaa';
+}
+
+.activity-blocks {
+    display: flex;
+    gap: 3px;
+    margin-top: 5px;
+}
+
+.block {
+    width: 10px;
+    height: 7px;
+    background-color: var(--hs-border-light);
+    border-radius: 2px;
+}
+
+    .block.active {
+        background-color: var(--hs-success);
+    }
+
+body {
+    background-color: var(--hs-bg-page);
+}
+
+.dot-indicator {
+    font-size: 18px;
+    color: var(--hs-error);
+    position: absolute;
+    top: 32px;
+    left: 100px;
+}
+
+.stitch-date-picker {
+    position: relative;
+
+}
+
+.dot-container {
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+
+.dot-indicator {
+    font-size: 20px;
+    color: var(--hs-primary);
+    display: inline-block;
+}
+
+.rz-calendar-cell {
+    position: relative;
+}
+
+.has-data::after {
+    content: '\2022';
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--hs-success);
+    font-size: 16px;
+}
+
+.data-dot {
+    width: 6px;
+    height: 6px;
+    background-color: var(--hs-success);
+    border-radius: 50%;
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.calendar-toggle-btn {
+    position: absolute;
+    right: -31px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--hs-text-secondary);
+    padding: 5px;
+}
+
+    .calendar-toggle-btn:hover {
+        color: var(--hs-primary);
+    }
+
+.data-dot {
+    width: 6px;
+    height: 6px;
+    background-color: var(--hs-success);
+    border-radius: 50%;
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.calendar-toggle-btn {
+    position: absolute;
+    right: -31px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--hs-text-secondary);
+    padding: 5px;
+}
+
+    .calendar-toggle-btn:hover {
+        color: var(--hs-primary);
+    }
+
+.custom-calendar-container {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    margin-top: 5px;
+}
+
+.custom-calendar {
+    background: var(--hs-bg-card);
+    border: 1px solid var(--hs-border-default);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: var(--hs-shadow-lg);
+    width: 300px;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.calendar-nav-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 5px 10px;
+}
+
+    .calendar-nav-btn:hover {
+        background-color: var(--hs-bg-hover);
+        border-radius: 4px;
+    }
+
+.calendar-month {
+    font-size: 16px;
+    color: var(--hs-text-primary);
+}
+
+.calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-size: 12px;
+    color: var(--hs-text-muted);
+}
+
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+/*    gap: 5px;*/
+}
+
+.calendar-day {
+    padding: 8px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 4px;
+    position: relative;
+    font-size: 14px;
+    height: 36px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+    .calendar-day:hover {
+        background-color: var(--hs-bg-hover);
+    }
+
+    .calendar-day.selected {
+        background-color: var(--hs-primary);
+        color: var(--hs-text-on-color);
+    }
+
+    .calendar-day.today {
+        background-color: var(--hs-primary-light);
+        font-weight: bold;
+    }
+
+    .calendar-day.other-month {
+        color: var(--hs-text-muted);
+    }
+
+.day-dot {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    color: var(--hs-primary);
+    font-size: 16px;
+    line-height: 1;
+}
+
+.screenshot-item {
+    margin-bottom: 20px;
+}
+
+.image-container {
+    border: 1px solid var(--hs-border-default);
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.screenshot-image {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    transition: transform 0.2s;
+}
+
+    .screenshot-image:hover {
+        transform: scale(1.05);
+    }
+
+.screenshot-info {
+    margin-top: 8px;
+    font-size: 14px;
+}
+
+.activity-blocks {
+    display: flex;
+    gap: 2px;
+    margin: 5px 0;
+}
+
+.block {
+    width: 8px;
+    height: 8px;
+    background-color: var(--hs-border-light);
+    border-radius: 1px;
+}
+
+    .block.active {
+        background-color: var(--hs-success);
+    }
+
+.delete-btn {
+    background: none;
+    border: none;
+    color: var(--hs-error);
+    cursor: pointer;
+    padding: 2px 5px;
+}
+
+    .delete-btn:hover {
+        color: var(--hs-error);
+        opacity: 0.8;
+    }
+
+.no-screenshots {
+    text-align: center;
+    padding: 40px;
+    color: var(--hs-text-muted);
+}
+
+
+.card {
+    background-color: var(--hs-bg-card);
+    border-radius: 23px;
+    color: var(--hs-text-primary);
+}
+
+.btn-secondary.btn-sm {
+    margin: 0 5px;
+    padding: 5px 10px;
+}
+
+span.mx-2 {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.paginatiion-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.table{
+    color: var(--hs-text-primary);
+}
+.card-header-background {
+    background: var(--hs-bg-surface) !important;
+}
+
+.total-duration-banner {
+    background: linear-gradient(135deg, var(--hs-blue-accent) 0%, var(--hs-purple) 100%);
+    color: var(--hs-text-on-color);
+    padding: 12px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    box-shadow: var(--hs-shadow-md);
+}
+
+.total-duration-banner i {
+    font-size: 18px;
+}
+
+.total-duration-banner strong {
+    font-weight: 700;
+}
+
+/* Refresh button styling for light/dark themes */
+.stitch-refresh-btn {
+    background-color: var(--hs-primary);
+    color: var(--hs-text-on-color);
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1.25rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stitch-refresh-btn:hover:not(:disabled) {
+    background-color: var(--hs-primary-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--hs-shadow-sm);
+}
+
+.stitch-refresh-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Card header text styling */
+.card-header {
+    color: var(--hs-text-primary);
+    background-color: var(--hs-bg-surface);
+}
+
+.card-header .btn-outline-secondary {
+    color: var(--hs-text-primary);
+    border-color: var(--hs-border-default);
+}
+
+.card-header .btn-outline-secondary:hover {
+    background-color: var(--hs-bg-hover);
+    color: var(--hs-text-primary);
+}
+
+/* Pagination buttons */
+.btn-secondary.btn-sm {
+    background-color: var(--hs-bg-surface);
+    color: var(--hs-text-primary);
+    border: 1px solid var(--hs-border-default);
+}
+
+.btn-secondary.btn-sm:hover:not(:disabled) {
+    background-color: var(--hs-bg-hover);
+    color: var(--hs-text-primary);
+}
+
+.btn-secondary.btn-sm:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Dashboard-aligned screenshot metadata and delete action */
+.screenshots-page,
+.screenshot-info,
+.screenshot-delete-btn {
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.screenshot-info {
+    display: grid !important;
+    grid-template-columns: auto minmax(78px, 1fr) auto 38px;
+    align-items: center;
+    gap: 8px;
+    min-height: 42px;
+    width: 100%;
+    color: var(--hs-text-primary);
+}
+
+.screenshot-time,
+.screenshot-score {
+    color: var(--hs-text-primary);
+    font-size: 0.9rem;
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: 0;
+    white-space: nowrap;
+}
+
+.screenshot-score {
+    min-width: 36px;
+    text-align: right;
+}
+
+.screenshot-info .activity-blocks {
+    min-width: 0;
+    justify-content: center !important;
+}
+
+.screenshot-info .block {
+    width: 8px !important;
+    height: 10px !important;
+    border-radius: 2px;
+}
+
+.screenshot-delete-btn {
+    display: inline-flex;
+    width: 38px;
+    height: 38px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--hs-border-default);
+    border-radius: 8px;
+    background: var(--hs-bg-surface);
+    color: var(--hs-text-secondary);
+    font-size: 0.95rem;
+    font-weight: 800;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: var(--hs-shadow-sm);
+    transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;
+}
+
+.screenshot-delete-btn:hover {
+    background: var(--hs-error-light);
+    border-color: var(--hs-error-border);
+    color: var(--hs-error);
+    transform: translateY(-1px);
+}
+
+.screenshot-delete-btn:focus-visible {
+    outline: 3px solid var(--hs-primary-focus);
+    outline-offset: 2px;
+}
+
+@media (max-width: 1400px) {
+    .screenshot-info {
+        grid-template-columns: auto minmax(62px, 1fr) auto 34px;
+        gap: 6px;
+    }
+
+    .screenshot-delete-btn {
+        width: 34px;
+        height: 34px;
+    }
+}
+
+/* Reference screenshot gallery layout */
+.screenshot-grid {
+    row-gap: 34px;
+}
+
+.screenshot-grid .screenshot-item {
+    flex: 0 0 20% !important;
+    max-width: 20% !important;
+    padding: 0 14px !important;
+    margin-bottom: 24px !important;
+}
+
+.screenshot-grid .image-container {
+    border-radius: 6px !important;
+    overflow: hidden;
+    background: var(--hs-bg-base);
+    border: 1px solid var(--hs-border-default);
+    box-shadow: var(--hs-shadow-md);
+}
+
+.screenshot-grid .screenshot-image {
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 0 !important;
+    border-radius: 0 !important;
+    object-fit: cover;
+}
+
+.screenshot-grid .screenshot-info {
+    grid-template-columns: auto minmax(74px, 1fr) auto 38px !important;
+    gap: 8px !important;
+    margin-top: 10px !important;
+}
+
+.screenshot-grid .activity-blocks {
+    justify-content: center !important;
+    gap: 3px !important;
+}
+
+.screenshot-grid .screenshot-info .block {
+    width: 8px !important;
+    height: 8px !important;
+    border-radius: 2px !important;
+}
+
+.screenshot-grid .screenshot-delete-btn {
+    width: 36px !important;
+    height: 36px !important;
+    border: 1px solid var(--hs-border-default) !important;
+    border-radius: 8px !important;
+    background: var(--hs-bg-base) !important;
+    color: var(--hs-error) !important;
+    box-shadow: var(--hs-shadow-sm) !important;
+}
+
+.screenshot-grid .screenshot-delete-btn:hover {
+    background: var(--hs-error-light) !important;
+    border-color: var(--hs-error-border) !important;
+    color: var(--hs-error) !important;
+}
+
+@media (max-width: 1450px) {
+    .screenshot-grid .screenshot-item {
+        flex-basis: 25% !important;
+        max-width: 25% !important;
+    }
+}
+
+@media (max-width: 1100px) {
+    .screenshot-grid .screenshot-item {
+        flex-basis: 33.333333% !important;
+        max-width: 33.333333% !important;
+    }
+}
+
+@media (max-width: 760px) {
+    .screenshot-grid .screenshot-item {
+        flex-basis: 50% !important;
+        max-width: 50% !important;
+    }
+}
+
+/* Final professional screenshots page design */
+.screenshots-shell {
+    max-width: 100% !important;
+    padding: 20px 22px !important;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+
+.screenshots-card {
+    padding: 20px !important;
+    border: 1px solid var(--hs-border-default) !important;
+    border-radius: 14px !important;
+    background: var(--hs-bg-card) !important;
+    color: var(--hs-text-primary) !important;
+    box-shadow: var(--hs-shadow-lg) !important;
+}
+
+.screenshots-toolbar {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 16px;
+    padding: 6px 0 18px !important;
+    margin-bottom: 18px !important;
+    border: 0 !important;
+    border-bottom: 1px solid var(--hs-border-default) !important;
+    background: transparent !important;
+}
+
+.screenshots-refresh-btn,
+.screenshots-date-picker {
+    height: 48px !important;
+    border-radius: 8px !important;
+    font-family: inherit !important;
+    font-size: 0.98rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 0 !important;
+}
+
+.screenshots-date-wrap {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
+.screenshots-date-picker {
+    min-width: 220px !important;
+    padding: 0 18px !important;
+    border: 1px solid var(--hs-border-default) !important;
+    background: var(--hs-bg-input) !important;
+    color: var(--hs-text-primary) !important;
+    box-shadow: var(--hs-shadow-xs);
+}
+
+.screenshots-calendar-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    cursor: pointer;
+}
+
+.screenshots-calendar-popover {
+    position: absolute;
+    /* top: calc(100% + 10px);
+    left: 50%; */
+    top: calc(100% + 2px);
+    left: 64%;
+    z-index: 10000;
+    width: 310px;
+    padding: 14px;
+    border: 1px solid var(--hs-border-default);
+    border-radius: 10px;
+    background: var(--hs-bg-elevated);
+    box-shadow: var(--hs-shadow-xl);
+    transform: translateX(-50%);
+}
+
+.screenshots-calendar-header {
+    display: grid;
+    grid-template-columns: 34px 1fr 34px;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    color: var(--hs-text-primary);
+}
+
+.screenshots-calendar-header strong {
+    text-align: center;
+    font-size: 0.95rem;
+    font-weight: 850;
+}
+
+.screenshots-calendar-nav {
+    display: inline-flex;
+    width: 34px;
+    height: 34px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--hs-border-default);
+    border-radius: 8px;
+    background: var(--hs-bg-surface);
+    color: var(--hs-text-secondary);
+}
+
+.screenshots-calendar-weekdays,
+.screenshots-calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+}
+
+.screenshots-calendar-weekdays {
+    margin-bottom: 6px;
+}
+
+.screenshots-calendar-weekdays span {
+    color: var(--hs-text-muted);
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-align: center;
+}
+
+.screenshots-calendar-day {
+    position: relative;
+    display: inline-flex;
+    height: 34px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--hs-text-primary);
+    font-size: 0.84rem;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.screenshots-calendar-day:hover:not(:disabled) {
+    background: var(--hs-primary-light);
+    border-color: var(--hs-primary-subtle);
+}
+
+.screenshots-calendar-day.muted {
+    color: var(--hs-text-muted);
+}
+
+.screenshots-calendar-day.selected {
+    background: var(--hs-primary);
+    border-color: var(--hs-primary);
+    color: var(--hs-text-on-color);
+}
+
+.screenshots-calendar-day:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+}
+
+.screenshots-calendar-day .tracked-dot {
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--hs-success);
+    transform: translateX(-50%);
+}
+
+.screenshots-calendar-day.selected .tracked-dot {
+    background: var(--hs-text-on-color);
+}
+
+.screenshots-refresh-btn {
+    flex-shrink: 0;
+    min-width: 148px;
+    padding: 0 22px !important;
+    background: var(--hs-primary) !important;
+    color: var(--hs-text-on-color) !important;
+    border: none !important;
+    box-shadow: var(--hs-shadow-sm) !important;
+}
+
+.screenshots-refresh-btn i,
+.screenshots-refresh-btn span {
+    color: var(--hs-text-on-color) !important;
+}
+
+body.dark-theme .screenshots-refresh-btn {
+    background: var(--hs-primary) !important;
+    color: var(--hs-text-on-color) !important;
+    border: none !important;
+    box-shadow: var(--hs-shadow-sm) !important;
+}
+
+body.dark-theme .screenshots-refresh-btn:hover:not(:disabled) {
+    background: var(--hs-primary-hover) !important;
+}
+
+.total-duration-banner {
+    height: 54px;
+    margin: 0 0 26px !important;
+    border-radius: 8px !important;
+    background: var(--hs-gradient-primary) !important;
+    color: var(--hs-text-on-color) !important;
+    font-size: 1rem !important;
+    font-weight: 800;
+    letter-spacing: 0 !important;
+}
+
+.total-duration-banner i,
+.total-duration-banner span,
+.total-duration-banner strong {
+    color: var(--hs-text-on-color) !important;
+}
+
+body.dark-theme .total-duration-banner {
+    background: var(--hs-bg-surface) !important;
+    border: 1px solid var(--hs-border-default) !important;
+    color: var(--hs-text-on-color) !important;
+    box-shadow: none !important;
+}
+
+.screenshot-grid {
+    --bs-gutter-x: 24px;
+    --bs-gutter-y: 34px;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.screenshot-grid .screenshot-item {
+    padding-right: 12px !important;
+    padding-left: 12px !important;
+    margin-bottom: 10px !important;
+}
+
+.screenshot-tile {
+    min-width: 0;
+}
+
+.screenshot-preview-btn {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 1px solid var(--hs-border-default) !important;
+    border-radius: 8px !important;
+    background: var(--hs-bg-base);
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: var(--hs-shadow-lg) !important;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.screenshot-preview-btn:hover {
+    border-color: var(--hs-border-medium) !important;
+    box-shadow: var(--hs-shadow-xl) !important;
+    transform: translateY(-2px);
+}
+
+.screenshot-preview-btn:focus-visible {
+    outline: 3px solid var(--hs-primary-focus);
+    outline-offset: 3px;
+}
+
+.screenshot-preview-btn .screenshot-image {
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    height: auto !important;
+    display: block;
+    object-fit: cover;
+    border: 0 !important;
+    border-radius: 0 !important;
+    transform: none !important;
+}
+
+.screenshot-info {
+    display: grid !important;
+    grid-template-columns: minmax(54px, auto) minmax(0, 1fr) 40px !important;
+    grid-template-areas:
+        "meta bars delete";
+    align-items: center;
+    gap: 10px !important;
+    min-height: 50px;
+    margin-top: 10px !important;
+    color: var(--hs-text-primary) !important;
+}
+
+.screenshot-meta {
+    grid-area: meta;
+    min-width: 52px;
+}
+
+.screenshot-time {
+    font-size: 0.95rem !important;
+    font-weight: 850 !important;
+    line-height: 1.15 !important;
+    color: var(--hs-text-primary) !important;
+    white-space: normal !important;
+}
+
+.screenshot-score {
+    margin-top: 3px !important;
+    color: var(--hs-text-secondary) !important;
+    font-size: 0.82rem !important;
+    font-weight: 800 !important;
+    text-align: left !important;
+}
+
+.screenshot-info .activity-blocks {
+    grid-area: bars;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 4px !important;
+    min-width: 0;
+    margin: 0 !important;
+    overflow: hidden;
+}
+
+.screenshot-info .block {
+    flex: 0 0 8px;
+    width: 8px !important;
+    height: 9px !important;
+    border-radius: 2px !important;
+    background: var(--hs-border-light) !important;
+}
+
+.screenshot-info .block.active {
+    background: var(--hs-success) !important;
+}
+
+.screenshot-delete-btn {
+    grid-area: delete;
+    width: 38px !important;
+    height: 38px !important;
+    border: 1px solid var(--hs-border-default) !important;
+    border-radius: 8px !important;
+    background: var(--hs-bg-surface) !important;
+    color: var(--hs-error) !important;
+    box-shadow: var(--hs-shadow-sm) !important;
+}
+
+.screenshot-delete-btn:hover {
+    background: var(--hs-error-light) !important;
+    border-color: var(--hs-error-border) !important;
+    color: var(--hs-error) !important;
+}
+
+@media (max-width: 1500px) {
+    .screenshot-info {
+        grid-template-columns: minmax(50px, auto) minmax(0, 1fr) 36px !important;
+        gap: 8px !important;
+    }
+
+    .screenshot-info .block {
+        flex-basis: 7px;
+        width: 7px !important;
+    }
+}
+
+@media (max-width: 900px) {
+    .screenshots-toolbar {
+        flex-direction: column;
+    }
+
+    .screenshots-date-wrap,
+    .screenshots-refresh-btn {
+        width: 100%;
+    }
+
+    .screenshots-date-picker {
+        width: 100% !important;
+    }
+}
+
+/* Simple, clean screenshot gallery */
+.screenshots-card {
+    padding: 18px !important;
+    border-radius: 10px !important;
+    box-shadow: var(--hs-shadow-lg) !important;
+}
+
+.screenshots-toolbar {
+    padding-bottom: 14px !important;
+    margin-bottom: 16px !important;
+}
+
+.total-duration-banner {
+    height: 48px !important;
+    margin-bottom: 28px !important;
+}
+
+.screenshot-grid {
+    --bs-gutter-x: 28px;
+    --bs-gutter-y: 42px;
+}
+
+.screenshot-tile {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+}
+
+.screenshot-preview-btn {
+    border-radius: 6px !important;
+    box-shadow: var(--hs-shadow-md) !important;
+}
+
+.screenshot-preview-btn:hover {
+    transform: none !important;
+    box-shadow: var(--hs-shadow-lg) !important;
+}
+
+.screenshot-info {
+    display: grid !important;
+    grid-template-columns: 58px minmax(116px, 1fr) 38px !important;
+    align-items: center !important;
+    gap: 10px !important;
+    min-height: 40px !important;
+    margin-top: 0 !important;
+}
+
+.screenshot-meta {
+    min-width: 0;
+}
+
+.screenshot-time {
+    color: var(--hs-text-primary) !important;
+    font-size: 0.9rem !important;
+    font-weight: 800 !important;
+    line-height: 1.25 !important;
+}
+
+.screenshot-activity {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 7px;
+}
+
+.screenshot-activity .activity-blocks {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 3px !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    flex: 0 0 auto;
+}
+
+.screenshot-activity .block {
+    flex: 0 0 7px;
+    width: 7px !important;
+    height: 8px !important;
+    border-radius: 2px !important;
+    background-color: var(--hs-border-light) !important;
+}
+
+.screenshot-activity .block.active {
+    background-color: var(--hs-success) !important;
+}
+
+.screenshot-score {
+    min-width: 34px;
+    color: var(--hs-text-secondary) !important;
+    font-size: 0.82rem !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+    text-align: right !important;
+}
+
+.screenshot-delete-btn {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 8px !important;
+    background: var(--hs-bg-surface) !important;
+    color: var(--hs-error) !important;
+    box-shadow: none !important;
+}
+
+.screenshot-delete-btn:hover {
+    background: var(--hs-error-light) !important;
+    transform: none !important;
+}
+
+/* Correct simple footer layout: no overlap, all 10 activity blocks visible */
+.screenshot-info {
+    display: grid !important;
+    width: 100% !important;
+    box-sizing: border-box;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    grid-template-areas:
+        "time delete"
+        "activity activity" !important;
+    align-items: center !important;
+    column-gap: 10px !important;
+    row-gap: 6px !important;
+    min-height: 64px !important;
+    margin-top: 10px !important;
+}
+
+.screenshot-meta {
+    grid-area: time !important;
+    min-width: 0 !important;
+}
+
+.screenshot-time {
+    display: block !important;
+    color: var(--hs-text-primary) !important;
+    font-size: 0.92rem !important;
+    font-weight: 800 !important;
+    line-height: 1.2 !important;
+    white-space: normal !important;
+}
+
+.screenshot-activity {
+    grid-area: activity !important;
+    display: flex !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+}
+
+.screenshot-activity .activity-blocks {
+    display: flex !important;
+    flex: 0 0 auto !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 4px !important;
+    margin: 0 !important;
+    overflow: visible !important;
+}
+
+.screenshot-activity .block {
+    flex: 0 0 8px !important;
+    width: 8px !important;
+    height: 8px !important;
+    border-radius: 2px !important;
+}
+
+.screenshot-score {
+    flex: 0 0 auto !important;
+    min-width: 34px !important;
+    color: var(--hs-text-primary) !important;
+    font-size: 0.84rem !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+    text-align: right !important;
+}
+
+.screenshot-delete-btn {
+    grid-area: delete !important;
+    align-self: center !important;
+    justify-self: end !important;
+}
+
+/* Force footer controls to align to the screenshot width */
+.screenshot-info {
+    position: relative !important;
+    display: block !important;
+    width: 100% !important;
+    min-height: 64px !important;
+    padding-right: 46px !important;
+    margin-top: 10px !important;
+}
+
+.screenshot-meta {
+    width: 100% !important;
+    min-height: 36px !important;
+}
+
+.screenshot-time {
+    display: block !important;
+    width: 100% !important;
+}
+
+.screenshot-delete-btn {
+    position: absolute !important;
+    top: 0 !important;
+    right: 0 !important;
+}
+
+.screenshot-activity {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    width: calc(100% + 46px) !important;
+    margin-top: 6px !important;
+    gap: 10px !important;
+    align-items: center !important;
+}
+
+.screenshot-activity .activity-blocks {
+    display: flex !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    justify-content: space-between !important;
+    gap: 0 !important;
+}
+
+.screenshot-activity .block {
+    flex: 0 0 8px !important;
+}
+
+/* Match Windows app screenshot footer: time, rating, and delete in one compact row */
+.screenshot-info {
+    display: grid !important;
+    width: 100% !important;
+    min-height: 42px !important;
+    padding-right: 0 !important;
+    grid-template-columns: auto minmax(104px, 1fr) auto 38px !important;
+    grid-template-areas: "time bars score delete" !important;
+    align-items: center !important;
+    column-gap: 8px !important;
+    row-gap: 0 !important;
+    margin-top: 10px !important;
+}
+
+.screenshot-meta {
+    grid-area: time !important;
+    width: auto !important;
+    min-height: 0 !important;
+    min-width: 54px !important;
+}
+
+.screenshot-time {
+    display: block !important;
+    width: auto !important;
+    margin: 0 !important;
+    color: var(--hs-text-primary) !important;
+    font-size: 0.92rem !important;
+    font-weight: 800 !important;
+    line-height: 1.2 !important;
+    white-space: normal !important;
+}
+
+.screenshot-activity {
+    display: contents !important;
+}
+
+.screenshot-activity .activity-blocks {
+    grid-area: bars !important;
+    display: flex !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 3px !important;
+    margin: 0 !important;
+    overflow: visible !important;
+}
+
+.screenshot-activity .block {
+    flex: 0 0 8px !important;
+    width: 8px !important;
+    height: 8px !important;
+    border-radius: 2px !important;
+}
+
+.screenshot-score {
+    grid-area: score !important;
+    min-width: 34px !important;
+    margin: 0 !important;
+    color: var(--hs-text-primary) !important;
+    font-size: 0.84rem !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+    text-align: right !important;
+}
+
+.screenshot-delete-btn {
+    position: static !important;
+    grid-area: delete !important;
+    justify-self: end !important;
+    align-self: center !important;
+}
+
+/* Windows app matching footer: compact one-line metadata under each screenshot */
+.screenshot-grid .screenshot-tile {
+    width: 100% !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+}
+
+.screenshot-grid .screenshot-info {
+    display: grid !important;
+    width: 100% !important;
+    min-height: 34px !important;
+    padding: 0 !important;
+    margin-top: 8px !important;
+    grid-template-columns: 54px minmax(104px, 1fr) 38px 18px !important;
+    grid-template-areas: "time bars score delete" !important;
+    align-items: center !important;
+    column-gap: 7px !important;
+    row-gap: 0 !important;
+}
+
+.screenshot-grid .screenshot-meta {
+    grid-area: time !important;
+    width: auto !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+}
+
+.screenshot-grid .screenshot-time {
+    display: block !important;
+    width: auto !important;
+    margin: 0 !important;
+    color: var(--hs-text-primary) !important;
+    font-size: 0.9rem !important;
+    font-weight: 800 !important;
+    line-height: 1.2 !important;
+    white-space: normal !important;
+}
+
+.screenshot-grid .screenshot-activity {
+    display: contents !important;
+}
+
+.screenshot-grid .screenshot-activity .activity-blocks {
+    grid-area: bars !important;
+    display: flex !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 3px !important;
+    margin: 0 !important;
+    overflow: visible !important;
+}
+
+.screenshot-grid .screenshot-activity .block {
+    flex: 0 0 8px !important;
+    width: 8px !important;
+    height: 8px !important;
+    border-radius: 2px !important;
+    background-color: var(--hs-bg-surface) !important;
+}
+
+.screenshot-grid .screenshot-activity .block.active {
+    background-color: var(--hs-success) !important;
+}
+
+.screenshot-grid .screenshot-score {
+    grid-area: score !important;
+    min-width: 38px !important;
+    margin: 0 !important;
+    color: var(--hs-text-primary) !important;
+    font-size: 0.84rem !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+    text-align: right !important;
+}
+
+.screenshot-grid .screenshot-delete-btn {
+    position: static !important;
+    grid-area: delete !important;
+    justify-self: end !important;
+    align-self: center !important;
+    width: 18px !important;
+    height: 24px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: var(--hs-error) !important;
+    font-size: 0.95rem !important;
+}
+
+.screenshot-grid .screenshot-delete-btn:hover {
+    background: transparent !important;
+    color: var(--hs-error) !important;
+    opacity: 0.85;
+    transform: none !important;
+}
+
+@media (max-width: 1500px) {
+    .screenshot-grid .screenshot-info {
+        grid-template-columns: 50px minmax(92px, 1fr) 34px 18px !important;
+        column-gap: 6px !important;
+    }
+
+    .screenshot-grid .screenshot-activity .block {
+        flex-basis: 7px !important;
+        width: 7px !important;
+    }
+}
+
+/* Final locked layout: each screenshot owns its footer, like the Windows app */
+.screenshots-card .screenshot-grid {
+    display: grid !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    gap: 46px 26px !important;
+    padding: 28px 14px !important;
+    margin: 0 !important;
+}
+
+.screenshots-card .screenshot-grid::before,
+.screenshots-card .screenshot-grid::after {
+    display: none !important;
+    content: none !important;
+}
+
+.screenshots-card .screenshot-grid .screenshot-item {
+    width: 100% !important;
+    max-width: none !important;
+    flex: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.screenshots-card .screenshot-tile {
+    display: grid !important;
+    grid-template-rows: auto auto !important;
+    width: 100% !important;
+    gap: 9px !important;
+}
+
+.screenshots-card .screenshot-preview-btn {
+    width: 100% !important;
+}
+
+.screenshots-card .screenshot-info {
+    display: grid !important;
+    width: 100% !important;
+    min-height: 34px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    grid-template-columns: 52px minmax(0, 1fr) 36px 18px !important;
+    grid-template-areas: "time bars score delete" !important;
+    align-items: center !important;
+    column-gap: 6px !important;
+    overflow: hidden !important;
+}
+
+.screenshots-card .screenshot-meta {
+    grid-area: time !important;
+    min-width: 0 !important;
+}
+
+.screenshots-card .screenshot-time {
+    margin: 0 !important;
+    color: var(--hs-text-primary) !important;
+    font-size: 0.9rem !important;
+    font-weight: 800 !important;
+    line-height: 1.2 !important;
+    white-space: normal !important;
+}
+
+.screenshots-card .screenshot-activity {
+    display: contents !important;
+}
+
+.screenshots-card .activity-blocks {
+    grid-area: bars !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 2px !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+}
+
+.screenshots-card .activity-blocks .block {
+    flex: 0 0 7px !important;
+    width: 7px !important;
+    height: 8px !important;
+    border-radius: 2px !important;
+    background: var(--hs-bg-surface) !important;
+}
+
+.screenshots-card .activity-blocks .block.active {
+    background: var(--hs-success) !important;
+}
+
+.screenshots-card .screenshot-score {
+    grid-area: score !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    color: var(--hs-text-primary) !important;
+    font-size: 0.84rem !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+    text-align: right !important;
+}
+
+.screenshots-card .screenshot-delete-btn {
+    grid-area: delete !important;
+    position: static !important;
+    width: 18px !important;
+    height: 24px !important;
+    min-width: 18px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: var(--hs-error) !important;
+    justify-self: end !important;
+}
+
+@media (max-width: 1450px) {
+    .screenshots-card .screenshot-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (max-width: 1100px) {
+    .screenshots-card .screenshot-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (max-width: 760px) {
+    .screenshots-card .screenshot-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}

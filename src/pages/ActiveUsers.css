@@ -1,0 +1,61 @@
+﻿@import url('app.css');
+@import url('AdminUsers.css');
+
+.active-users-container {
+  padding: 20px;
+  background: var(--hs-bg-page);
+  min-height: 100vh;
+  color: var(--hs-text-primary);
+}
+
+.active-users-container .admin-info-card .admin-avatar-large {
+  background: var(--hs-success-light);
+  color: var(--hs-success);
+}
+
+.active-users-container .stat-box.active {
+  border-color: var(--hs-success-border);
+  background: var(--hs-success-light);
+}
+
+.active-users-container .stat-box.active .stat-number {
+  color: var(--hs-success);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--hs-status-active);
+  display: inline-block;
+  animation: status-pulse 2s ease-in-out infinite;
+}
+
+@keyframes status-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.role-badge.admin {
+  background: var(--hs-info-light);
+  color: var(--hs-info);
+}
+
+.role-badge.user {
+  background: var(--hs-primary-light);
+  color: var(--hs-primary);
+}
+
+.role-badge.superadmin {
+  background: var(--hs-secondary-light);
+  color: var(--hs-secondary);
+}

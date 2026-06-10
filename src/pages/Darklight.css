@@ -1,0 +1,25 @@
+﻿/* ==========================================================================
+   LEGACY DARK THEME COMPATIBILITY — References new design token system
+   ========================================================================== */
+
+.dark-theme {
+  --bg-primary:            var(--hs-bg-page);
+  --bg-secondary:          var(--hs-bg-surface);
+  --bg-tertiary:           var(--hs-bg-elevated);
+  --text-primary:          var(--hs-text-primary);
+  --text-secondary:        var(--hs-text-secondary);
+  --border-color:          var(--hs-border-default);
+  --card-bg:               var(--hs-bg-card);
+  --header-bg:             var(--hs-bg-surface);
+  --accent-color:          var(--hs-primary);
+  --accent-hover:          var(--hs-primary-hover);
+  --bar-bg:                var(--hs-bg-elevated);
+  --shadow-color:          rgba(0, 0, 0, 0.4);
+  --glass-bg:              var(--hs-bg-card);
+  --glass-border:          var(--hs-border-light);
+}
+
+.dark-theme body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}

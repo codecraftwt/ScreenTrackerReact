@@ -1,0 +1,125 @@
+/* ==========================================================================
+   LEGACY GLOBAL THEME — References new design token system
+   ========================================================================== */
+
+.content {
+  background-color: var(--hs-bg-page);
+  color: var(--hs-text-primary);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.page {
+  background-color: var(--hs-bg-page);
+}
+
+.sidebar {
+  background-color: var(--hs-bg-sidebar);
+}
+
+.modal-content {
+  background-color: var(--hs-bg-modal);
+  border: 1px solid var(--hs-border-default);
+  color: var(--hs-text-primary);
+}
+
+.modal-header,
+.modal-footer {
+  border-color: var(--hs-border-default);
+}
+
+.dropdown-menu {
+  background-color: var(--hs-bg-dropdown);
+  border: 1px solid var(--hs-border-default);
+  box-shadow: var(--hs-shadow-dropdown);
+}
+
+.dropdown-item {
+  color: var(--hs-text-primary);
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+  background-color: var(--hs-bg-hover);
+  color: var(--hs-primary);
+}
+
+.dropdown-item.active,
+.dropdown-item:active {
+  background-color: var(--hs-primary);
+  color: var(--hs-text-on-color);
+}
+
+.dropdown-item.disabled,
+.dropdown-item:disabled {
+  background-color: var(--hs-bg-surface);
+  color: var(--hs-text-disabled);
+}
+
+.alert-info {
+  background-color: var(--hs-info-light);
+  border-color: var(--hs-info-border);
+  color: var(--hs-text-primary);
+}
+
+.alert-success {
+  background-color: var(--hs-success-light);
+  border-color: var(--hs-success-border);
+  color: var(--hs-success);
+}
+
+.alert-warning {
+  background-color: var(--hs-warning-light);
+  border-color: var(--hs-warning-border);
+  color: var(--hs-warning);
+}
+
+.alert-danger {
+  background-color: var(--hs-error-light);
+  border-color: var(--hs-error-border);
+  color: var(--hs-error);
+}
+
+.btn-back,
+.back-btn,
+.screenshots-back-btn,
+.screenshot-details-back,
+.fp-back-btn,
+.theme-back-btn {
+  display: inline-flex !important;
+  min-width: 108px;
+  height: 44px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  padding: 0 16px !important;
+  border: 1px solid var(--hs-border-default) !important;
+  border-radius: 8px !important;
+  background: var(--hs-bg-surface) !important;
+  color: var(--hs-text-primary) !important;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-size: 0.95rem !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+  text-decoration: none !important;
+  box-shadow: none !important;
+  cursor: pointer;
+}
+
+.btn-back:hover,
+.back-btn:hover,
+.screenshots-back-btn:hover,
+.screenshot-details-back:hover,
+.fp-back-btn:hover,
+.theme-back-btn:hover {
+  border-color: var(--hs-primary) !important;
+  background: var(--hs-primary-light) !important;
+  color: var(--hs-primary) !important;
+}
+
+* {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+img, svg, canvas, video, audio {
+  transition: none;
+}

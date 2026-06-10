@@ -1,0 +1,136 @@
+﻿@import url('app.css');
+
+.theme-container {
+    max-width: 400px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: var(--hs-bg-card);
+    border: 1px solid var(--hs-border-default);
+    border-radius: 12px;
+    box-shadow: var(--hs-shadow-modal);
+    color: var(--hs-text-primary);
+    transition: all 0.2s ease;
+    font-family: 'Comfortaa', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+.theme-section {
+    margin-bottom: 2rem;
+}
+
+.theme-label {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--hs-text-primary);
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+.theme-controls-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.theme-dropdown-wrapper {
+    flex: 1;
+}
+
+.theme-dropdown {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+    background: var(--hs-bg-input);
+    color: var(--hs-text-primary);
+    border: 2px solid var(--hs-border-default);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.75rem center;
+    background-repeat: no-repeat;
+    background-size: 1.25rem;
+    padding-right: 2.75rem;
+}
+
+.theme-dropdown:hover {
+    border-color: var(--hs-primary);
+    box-shadow: 0 0 0 3px var(--hs-primary-subtle);
+}
+
+.theme-dropdown:focus {
+    outline: none;
+    border-color: var(--hs-primary);
+    box-shadow: var(--hs-focus-ring);
+}
+
+.theme-toggle-btn {
+    width: 50px;
+    height: 50px;
+    background: var(--hs-bg-surface);
+    color: var(--hs-text-primary);
+    border: 2px solid var(--hs-border-default);
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.theme-toggle-btn:hover {
+    background: var(--hs-bg-hover);
+    border-color: var(--hs-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--hs-shadow-sm);
+}
+
+.theme-toggle-btn:active {
+    transform: translateY(0);
+}
+
+.theme-back-btn {
+    width: 100%;
+    padding: 0.875rem 1.25rem;
+    background: var(--hs-bg-surface);
+    color: var(--hs-text-primary);
+    border: 2px solid var(--hs-border-default);
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.theme-back-btn:hover {
+    background: var(--hs-bg-hover);
+    border-color: var(--hs-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--hs-shadow-sm);
+}
+
+.theme-back-btn:active {
+    transform: translateY(0);
+}
+
+/* Theme indicator */
+.theme-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--hs-bg-surface);
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-top: 1rem;
+    color: var(--hs-text-primary);
+}
+
+.theme-indicator i {
+    font-size: 1rem;
+}

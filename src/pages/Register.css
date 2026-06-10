@@ -1,0 +1,250 @@
+﻿@import url('app.css');
+
+.register-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    background: var(--hs-bg-page);
+    font-family: 'Roboto', 'Google Sans', sans-serif;
+}
+
+.form-card {
+    width: 100%;
+    max-width: 560px;
+    background: var(--hs-bg-card);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: var(--hs-shadow-lg);
+    border: 1px solid var(--hs-border-default);
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.form-header h2 {
+    font-size: 24px;
+    font-weight: 500;
+    color: var(--hs-text-primary);
+    margin: 0 0 8px 0;
+}
+
+.form-header p {
+    font-size: 16px;
+    margin: 0;
+    color: var(--hs-text-secondary);
+}
+
+.input-grid {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.input-group {
+    flex: 1;
+    margin-bottom: 16px;
+}
+
+label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--hs-text-primary);
+    margin-bottom: 8px;
+    margin-left: 20px;
+}
+
+.input-field {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 16px;
+    border: 1px solid var(--hs-border-default);
+    border-radius: 8px !important;
+    background-color: var(--hs-bg-input);
+    color: var(--hs-text-primary);
+    transition: all 0.2s;
+    box-sizing: border-box;
+}
+
+.input-field:focus {
+    border-color: var(--hs-primary);
+    box-shadow: var(--hs-focus-ring);
+    outline: none;
+}
+
+.input-field::placeholder {
+    color: var(--hs-text-placeholder);
+}
+
+.button-group {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    justify-content: flex-end;
+}
+
+.btn {
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid var(--hs-border-default);
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn.primary {
+    background-color: var(--hs-primary);
+    color: var(--hs-text-on-color);
+    border-color: var(--hs-primary);
+}
+
+.btn.primary:hover {
+    background-color: var(--hs-primary-hover);
+    border-color: var(--hs-primary-hover);
+    box-shadow: var(--hs-shadow-sm);
+}
+
+.btn.secondary {
+    background-color: var(--hs-bg-surface);
+    color: var(--hs-text-primary);
+}
+
+.btn.secondary:hover {
+    background-color: var(--hs-bg-hover);
+}
+
+.btn.outline {
+    background-color: transparent;
+    color: var(--hs-primary);
+    border: 1px solid var(--hs-border-default);
+}
+
+.btn.outline:hover {
+    background-color: var(--hs-primary-subtle);
+    border-color: var(--hs-primary);
+}
+
+.form-footer {
+    text-align: center;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--hs-border-default);
+}
+
+.form-footer p {
+    margin: 0;
+    color: var(--hs-text-secondary);
+    font-size: 14px;
+}
+
+.link {
+    color: var(--hs-primary);
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
+
+.message {
+    padding: 16px;
+    border-radius: 8px;
+    margin-top: 20px;
+    font-size: 14px;
+    color: var(--hs-text-primary);
+}
+
+.message.success {
+    background-color: var(--hs-success-light);
+    color: var(--hs-success);
+    border: 1px solid var(--hs-success-border);
+}
+
+.message.error {
+    background-color: var(--hs-error-light);
+    color: var(--hs-error);
+    border: 1px solid var(--hs-error-border);
+}
+
+.validation-message {
+    font-size: 12px;
+    color: var(--hs-error);
+    margin-top: 4px;
+    display: block;
+}
+
+.required {
+    color: var(--hs-error);
+    font-weight: bold;
+    margin-left: 4px;
+}
+
+.optional-label {
+    margin-left: 6px;
+    color: var(--hs-text-secondary);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-wrapper .input-field {
+    width: 100%;
+    padding-right: 40px;
+}
+
+.toggle-button {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--hs-text-muted);
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.toggle-button:hover {
+    color: var(--hs-text-primary);
+}
+
+.toggle-button i {
+    font-size: 1.1rem;
+}
+
+@media (max-width: 600px) {
+    .form-card {
+        padding: 24px;
+    }
+
+    .input-grid {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .button-group {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}

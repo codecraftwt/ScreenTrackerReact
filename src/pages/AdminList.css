@@ -1,0 +1,213 @@
+@import url('app.css');
+@import url('AdminUsers.css');
+
+.admin-list-container {
+  padding: 20px;
+  background: var(--hs-bg-page);
+  min-height: 100vh;
+  color: var(--hs-text-primary);
+}
+
+.admin-list-header {
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--hs-border-default);
+}
+
+.admin-list-header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--hs-text-primary);
+  margin: 0 0 4px;
+}
+
+.admin-list-header p {
+  color: var(--hs-text-secondary);
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.loading-spinner {
+  border: 4px solid var(--hs-border-default);
+  border-top-color: var(--hs-primary);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 40px auto;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.alert {
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+}
+
+.alert-warning {
+  background-color: var(--hs-warning-light);
+  border: 1px solid var(--hs-warning-border);
+  color: var(--hs-warning);
+}
+
+.alert-success {
+  background-color: var(--hs-success-light);
+  border: 1px solid var(--hs-success-border);
+  color: var(--hs-success);
+}
+
+.alert-error {
+  background-color: var(--hs-error-light);
+  border: 1px solid var(--hs-error-border);
+  color: var(--hs-error);
+}
+
+.admin-list-table-container {
+  background: var(--hs-bg-card);
+  border: 1px solid var(--hs-border-default);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: var(--hs-shadow-card);
+}
+
+.admin-list-table-container .table-header {
+  background: var(--hs-bg-surface);
+  padding: 16px 20px;
+  border-bottom: 2px solid var(--hs-border-default);
+}
+
+.admin-list-table-container .table-header h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--hs-text-primary);
+  margin: 0;
+}
+
+.admin-list-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-list-table th {
+  background: var(--hs-bg-table-header);
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--hs-text-primary);
+  border-bottom: 1px solid var(--hs-border-default);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.admin-list-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--hs-border-default);
+  color: var(--hs-text-primary);
+  font-size: 0.9rem;
+}
+
+.admin-list-table tr:hover td {
+  background-color: var(--hs-bg-table-hover);
+}
+
+.admin-list-table tr:last-child td {
+  border-bottom: none;
+}
+
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.role-badge.admin {
+  background: var(--hs-info-light);
+  color: var(--hs-info);
+}
+
+.role-badge.superadmin {
+  background: var(--hs-primary-light);
+  color: var(--hs-primary);
+}
+
+.action-btn {
+  padding: 6px 12px;
+  border: 1px solid var(--hs-border-default);
+  border-radius: 6px;
+  background: var(--hs-bg-surface);
+  color: var(--hs-text-primary);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.action-btn:hover {
+  background: var(--hs-bg-hover);
+  border-color: var(--hs-border-medium);
+}
+
+.action-btn.primary {
+  background: var(--hs-primary);
+  border-color: var(--hs-primary);
+  color: var(--hs-text-on-color);
+}
+
+.action-btn.danger {
+  color: var(--hs-error);
+  border-color: var(--hs-error-border);
+}
+
+.action-btn.danger:hover {
+  background: var(--hs-error-light);
+}
+
+.status-text {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.status-text.active {
+  color: var(--hs-success);
+}
+
+.status-text.inactive {
+  color: var(--hs-error);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--hs-text-muted);
+}
+
+.empty-state p {
+  color: var(--hs-text-secondary);
+}
+
+.email-link {
+  color: var(--hs-primary);
+  text-decoration: none;
+}
+
+.email-link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .admin-list-container {
+    padding: 12px;
+  }
+
+  .admin-list-table th,
+  .admin-list-table td {
+    padding: 10px 12px;
+  }
+}

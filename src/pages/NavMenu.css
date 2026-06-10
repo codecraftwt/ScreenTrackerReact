@@ -1,0 +1,444 @@
+@import url('app.css');
+
+.stitch-header {
+    display: flex;
+    flex-direction: column;
+    height: 97%;
+    width: 100%;
+    background-color: var(--color-secondary);
+    border-radius: 31px;
+    padding: 15px;
+    gap: 20px;
+    margin: 0;
+    box-shadow: 0 2px 4px var(--color-shadow);
+    border-bottom: 1px solid var(--color-border);
+    font-weight: bold;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    position: relative;
+    z-index: 10;
+}
+
+.header-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.stitch-heading {
+    margin: 0;
+    font-size: 1.25rem;
+    color: var(--hs-text-primary);
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    white-space: nowrap;
+    text-decoration: none;
+    color: var(--color-text-color) !important;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+    width: 100%;
+}
+
+.nav-link i {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 1.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-right: 0;
+    line-height: 1;
+}
+
+.nav-link:hover {
+    background-color: var(--hs-bg-hover);
+}
+
+.nav-link.active {
+    background-color: var(--hs-primary-light);
+}
+
+.stitch-header .tooltip-container {
+    position: relative;
+}
+
+.user-menu-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+/*    color: white;*/
+    transition: none;
+}
+
+    /* Remove hover effect from profile icon */
+    .user-menu-button:hover {
+        color: var(--color-text-color);
+        background-color: transparent !important;
+        background: none !important;
+    }
+
+.user-menu-dropdown {
+    position: static;
+    top: 100%;
+    right: 0;
+    list-style: none;
+    padding: 10px;
+    margin: 5px 0 0;
+    background-color: var(--color-secondary);
+ 
+    box-shadow: var(--hs-shadow-dropdown);
+    border-radius: 5px;
+    z-index: 1000;
+}
+
+.nav-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.nav-submenu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: var(--hs-bg-dropdown);
+    border: 1px solid var(--hs-border-default);
+    min-width: 200px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    z-index: 1000;
+}
+
+    .nav-submenu li {
+        padding: 8px 12px;
+        cursor: pointer;
+    }
+
+        .nav-submenu li:hover {
+            background-color: var(--hs-bg-hover);
+        }
+
+/*.nav-link.active {
+    border-left: 5px solid var(--hs-primary);
+   
+    padding-left: 15px;
+}*/
+
+a:hover {
+    text-decoration: none !important;
+}
+
+.tooltip-text-user {
+    margin-left: 20px;
+    margin-bottom: -10px;
+}
+
+/* --- Main Grid Container (.dashboard-grid-container) --- */
+.dashboard-grid-container {
+    /* Set up the grid layout */
+    display: grid;
+    /* Define a single column by default (for mobile/small screens) */
+    grid-template-columns: 1fr;
+    /* Define the gap between items */
+    gap: 1.5rem; /* Equivalent to common Bootstrap spacing (e.g., g-3) */
+}
+
+/* Media query for medium-sized screens and up (md breakpoint) */
+@media (min-width: 768px) {
+    .dashboard-grid-container {
+        /* On medium screens, create two columns of equal size (1fr each) */
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* --- Nested Stats Grid Container (.stats-grid-container) --- */
+/* This container holds the four smaller statistic cards */
+.stats-grid-container {
+    /* Set up a nested grid layout */
+    display: grid;
+    /* Define two columns of equal size for its children on all screen sizes */
+    grid-template-columns: 1fr 1fr;
+    /* Define the gap between its children */
+    gap: 1.5rem; /* Consistent spacing */
+    /* Handle the vertical spacing for the second row on small screens */
+    /* This replaces the mt-3 and mt-md-0 logic */
+}
+
+
+.stats-grid-container {
+    row-gap: 1.5rem;
+}
+
+    /* Custom class handling the margin that was in the original HTML: 
+   mt-3 on small, mt-md-0 on medium */
+    .stats-grid-container .mt-3 {
+        margin-top: 1rem; /* Example mt-3 size */
+    }
+
+@media (min-width: 768px) {
+    .stats-grid-container .mt-md-0 {
+        margin-top: 0 !important;
+    }
+}
+
+
+/* --- Card Item Sizing (The original 'h-100' for the login card) --- */
+/* Ensure the login card item takes up the full height of its cell */
+.dashboard-card.h-100 {
+    height: 100%;
+}
+
+/* --- Main Grid Container (.dashboard-grid-container) --- */
+.dashboard-grid-container {
+    /* Set up the grid layout */
+    display: grid;
+    /* Define a single column by default (for mobile/small screens) */
+    grid-template-columns: 1fr;
+    /* Define the gap between items */
+    gap: 1.5rem;
+}
+
+/* Media query for medium-sized screens and up (md breakpoint) */
+@media (min-width: 768px) {
+    .dashboard-grid-container {
+        /* *** PRIMARY CHANGE HERE *** */
+        /* On medium screens, create two columns with a 2:3 ratio (approx 40% / 60%) */
+        grid-template-columns: 2fr 3fr;
+    }
+}
+
+/* --- Nested Stats Grid Container (.stats-grid-container) --- */
+/* This container holds the four smaller statistic cards */
+.stats-grid-container {
+    /* Set up a nested grid layout */
+    display: grid;
+    /* Define two columns of equal size for its children on all screen sizes */
+    grid-template-columns: 1fr 1fr;
+    /* Define the gap between its children. Using 'gap' handles both rows and columns. */
+    gap: 1.5rem;
+    width: 100vh;
+}
+
+/* * REMOVED: Redundant row-gap and custom margin logic 
+* The single 'gap: 1.5rem;' in .stats-grid-container handles all spacing correctly.
+*/
+
+
+/* --- Card Item Sizing (The original 'h-100' for the login card) --- */
+/* Ensure the login card item takes up the full height of its cell */
+.dashboard-card.h-100 {
+    height: 100%;
+}
+.nav-link { 
+    cursor: pointer !important;
+    pointer-events: auto !important;
+}
+
+.menu-item-btn {
+    background: none;
+    border: none;
+    color: var(--color-text-color);
+    padding: 10px 15px;
+    text-align: left;
+    cursor: pointer;
+    width: 100%;
+    pointer-events: auto !important;
+}
+
+.menu-item-btn:hover {
+    background-color: var(--hs-bg-hover);
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--hs-bg-overlay);
+    z-index: 999;
+}
+
+.theme-dropdown-wrapper .theme-dropdown {
+    display: none;
+}
+
+.theme-searchable-select {
+    min-width: 220px;
+}
+
+.theme-searchable-select .theme-select__control {
+    min-height: 42px;
+    border: 1px solid var(--hs-border-default);
+    border-radius: 8px;
+    background-color: var(--hs-bg-input);
+    color: var(--hs-text-primary);
+    box-shadow: none;
+}
+
+.theme-searchable-select .theme-select__control:hover,
+.theme-searchable-select .theme-select__control--is-focused {
+    border-color: var(--hs-primary);
+    box-shadow: var(--hs-focus-ring);
+}
+
+.theme-searchable-select .theme-select__single-value,
+.theme-searchable-select .theme-select__input-container,
+.theme-searchable-select .theme-select__placeholder {
+    color: var(--hs-text-primary);
+}
+
+.theme-searchable-select .theme-select__menu {
+    z-index: 1200;
+    background-color: var(--hs-bg-dropdown);
+    border: 1px solid var(--hs-border-default);
+    color: var(--hs-text-primary);
+}
+
+.theme-searchable-select .theme-select__option {
+    background-color: var(--hs-bg-dropdown);
+    color: var(--hs-text-primary);
+}
+
+.theme-searchable-select .theme-select__option--is-focused {
+    background-color: var(--hs-bg-hover);
+    color: var(--hs-primary);
+}
+
+.theme-searchable-select .theme-select__option--is-selected {
+    background-color: var(--hs-primary);
+    color: var(--hs-text-on-color);
+}
+
+.theme-searchable-select .theme-select__option--is-disabled {
+    background-color: var(--hs-bg-surface);
+    color: var(--hs-text-disabled);
+}
+
+/* Professional sidebar override */
+.stitch-header {
+    height: calc(100vh - 28px);
+    padding: 18px 16px;
+    border: 1px solid var(--hs-border-default);
+    border-radius: 8px;
+    background: var(--hs-bg-sidebar);
+    box-shadow: var(--hs-shadow-lg);
+}
+
+.header-content {
+    gap: 8px;
+}
+
+.nav-link {
+    min-height: 42px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    color: var(--hs-text-primary) !important;
+    font-size: 0.95rem;
+    font-weight: 750;
+}
+
+.nav-link i {
+    color: var(--hs-text-secondary);
+}
+
+.nav-link:hover {
+    background: var(--hs-bg-hover);
+    color: var(--hs-primary) !important;
+}
+
+.nav-link:hover i {
+    color: var(--hs-primary);
+}
+
+.nav-link.active {
+    background: var(--hs-primary-light);
+    color: var(--hs-primary) !important;
+}
+
+.nav-link.active i {
+    color: var(--hs-primary);
+}
+
+.tooltip-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--hs-border-default);
+}
+
+.sidebar-profile-section {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.sidebar-profile-section .profile-icon-btn {
+    width: 48px !important;
+    height: 48px !important;
+    font-size: 20px !important;
+}
+
+.sidebar-profile-section .profile-dropdown {
+    left: 50% !important;
+    top: auto !important;
+    bottom: 100% !important;
+    transform: translateX(-50%) !important;
+    margin-bottom: 8px !important;
+}
+
+.stitch-header .stitch-heading {
+    color: var(--hs-text-primary);
+    font-size: 1rem;
+    font-weight: 800;
+    text-align: center;
+}
+
+.stitch-header .user-menu-button {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    background: var(--hs-bg-hover);
+    color: var(--hs-text-secondary);
+}
+
+.stitch-header .user-menu-button:hover {
+    background: var(--hs-primary-light) !important;
+    color: var(--hs-primary);
+}
+
+.stitch-header .user-menu-dropdown {
+    width: 100%;
+    padding: 6px;
+    border: 1px solid var(--hs-border-default);
+    border-radius: 8px;
+    background: var(--hs-bg-dropdown);
+    box-shadow: var(--hs-shadow-dropdown);
+}
+
+.stitch-header .user-menu-dropdown li {
+    padding: 0;
+}
+
+.stitch-header .menu-item-btn {
+    border-radius: 7px;
+    color: var(--hs-text-primary);
+    font-size: 0.92rem;
+    font-weight: 700;
+}
+
+.stitch-header .menu-item-btn:hover {
+    background: var(--hs-bg-hover);
+    color: var(--hs-primary);
+}
