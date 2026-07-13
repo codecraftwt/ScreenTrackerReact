@@ -1,5 +1,19 @@
 import api from './api';
 
+const getApiErrorMessage = (error, fallback) => {
+    const responseData = error.response?.data;
+
+    if (typeof responseData === 'string') {
+        const message = responseData.trim();
+        const isHtmlResponse = /^\s*<!doctype html|^\s*<html/i.test(message);
+
+        if (!isHtmlResponse && message) return message;
+    }
+
+    if (responseData?.message) return responseData.message;
+    return fallback;
+};
+
 export const authService = {
 
     login: async (username, password) => {
@@ -11,7 +25,12 @@ export const authService = {
         } catch (error) {
             return {
                 success: false,
-                message: error.response?.data || 'Login failed. Please try again.'
+                message: getApiErrorMessage(
+                    error,
+                    error.response?.status === 404
+                        ? 'Login API endpoint was not found. Please check the deployed API URL.'
+                        : 'Login failed. Please try again.'
+                )
             };
         }
     },
