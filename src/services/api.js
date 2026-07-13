@@ -2,14 +2,11 @@ import axios from 'axios';
 import store from '../app/store';
 
 const configuredBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim();
-
-if (!configuredBaseUrl) {
-    throw new Error(
-        'VITE_API_BASE_URL is missing. Configure it in the Vercel environment variables.'
-    );
-}
-
-const BASE_URL = configuredBaseUrl.replace(/\/+$/, '');
+const BASE_URL = configuredBaseUrl
+    ? configuredBaseUrl.replace(/\/+$/, '')
+    : import.meta.env.PROD
+        ? '/api'
+        : 'http://10.0.3.55:90/api';
 
 const api = axios.create({
     baseURL: BASE_URL,
