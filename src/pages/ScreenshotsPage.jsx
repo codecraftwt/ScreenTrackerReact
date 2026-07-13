@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useUser } from '../features/user/userHooks';
+import { userService } from '../services/userService';
 import { decodeToken } from '../utils/jwtHelper';
 import './ScreenshotsPage.css';
 
@@ -39,6 +40,9 @@ const ScreenshotsPage = () => {
     const [screenshots, setScreenshots] = useState([]);
     const [totalDuration, setTotalDuration] = useState('0h 0m');
     const [currentUserId, setCurrentUserId] = useState(null);
+    const [loggedInUserId, setLoggedInUserId] = useState(null);
+    const [loggedInRole, setLoggedInRole] = useState('');
+    const [deleteAuthority, setDeleteAuthority] = useState(false);
     const [themeVersion, setThemeVersion] = useState(0);
     const calendarRef = useRef(null);
 
@@ -53,14 +57,14 @@ const ScreenshotsPage = () => {
     const calculateActivityScore = (screenshot) => {
         const keyboardClicks = getValue(screenshot, 'keyboardClicks', 'KeyboardClicks') || 0;
         const mouseClicks = getValue(screenshot, 'mouseClicks', 'MouseClicks') || 0;
-        const score = Math.round(((keyboardClicks + mouseClicks) / 300) * 100);
+        const score = Math.floor(((keyboardClicks + mouseClicks) / 300) * 100);
         return Math.min(Math.max(score, 0), 100);
     };
 
     const getActiveBlocks = (screenshot) => {
         const keyboardClicks = getValue(screenshot, 'keyboardClicks', 'KeyboardClicks') || 0;
         const mouseClicks = getValue(screenshot, 'mouseClicks', 'MouseClicks') || 0;
-        const blocks = Math.round(((keyboardClicks + mouseClicks) / 300) * 10);
+        const blocks = Math.floor(((keyboardClicks + mouseClicks) / 300) * 10);
         return Math.min(Math.max(blocks, 0), 10);
     };
 
@@ -220,6 +224,21 @@ const ScreenshotsPage = () => {
 
                 if (!userId) userId = decodedUser.id;
                 setCurrentUserId(userId);
+                
+                // Store logged-in user info from token for permission checks
+                setLoggedInUserId(decodedUser.id);
+                setLoggedInRole(decodedUser.role || '');
+                
+                // Fetch logged-in user's full profile for delete authority check
+                // Using userService directly (not Redux thunk) to avoid state interference
+                userService.getUserById(decodedUser.id).then((userData) => {
+                    if (userData) {
+                        const isSelected = getValue(userData, 'isSelected', 'IsSelected') === true;
+                        setDeleteAuthority(isSelected);
+                    }
+                }).catch(() => {
+                    // Silently fail - delete button will be hidden for regular users
+                });
             }
         }
     }, [viewedUserId]);
@@ -276,12 +295,26 @@ const ScreenshotsPage = () => {
 //     return () => clearInterval(interval);
 // }, [currentUserId, captureAndUpload]);
 
+    const canDeleteScreenshot = (screenshot) => {
+        const role = loggedInRole.toLowerCase();
+        
+        // Admins and superadmins can delete all screenshots
+        if (role === 'admin' || role === 'superadmin') return true;
+        
+        // Regular users can only delete their own screenshots if delete authority is enabled
+        const screenshotUserId = Number(getValue(screenshot, 'userId', 'UserId')) || 0;
+        return deleteAuthority === true && loggedInUserId === screenshotUserId;
+    };
+
     const deleteScreenshot = async (id) => {
-        if (window.confirm('Are you sure you want to delete this screenshot?')) {
-            const result = await deleteScreenshotRedux(id);
-            if (result.meta.requestStatus === 'fulfilled') {
-                await loadScreenshots();
-            }
+        if (!window.confirm('Are you sure you want to delete this screenshot?')) return;
+        
+        const result = await deleteScreenshotRedux(id);
+        if (result.meta.requestStatus === 'fulfilled') {
+            window.alert('Screenshot deleted successfully.');
+            await loadScreenshots();
+        } else {
+            window.alert('Failed to delete screenshot. You may not have delete authority.');
         }
     };
 
@@ -310,7 +343,7 @@ const ScreenshotsPage = () => {
                             <i className="fas fa-calendar-alt"></i>
                         </button>
                         {isCalendarOpen && (
-                            <div className="screenshots-calendar-popover">
+                            <div className="screenshots-calendar-popover screenshots-calendar-popover-screen">
                                 <div className="screenshots-calendar-header">
                                     <button
                                         type="button"
@@ -411,15 +444,17 @@ const ScreenshotsPage = () => {
                                                 </div>
                                                 <p className="screenshot-score mb-0">{screenshot.activityScore}%</p>
                                             </div>
-                                            <button
-                                                type="button"
-                                                onClick={() => deleteScreenshot(getValue(screenshot, 'id', 'Id'))}
-                                                className="screenshot-delete-btn"
-                                                title="Delete screenshot"
-                                                aria-label="Delete screenshot"
-                                            >
-                                                <i className="fa fa-trash"></i>
-                                            </button>
+                                            {canDeleteScreenshot(screenshot) && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => deleteScreenshot(getValue(screenshot, 'id', 'Id'))}
+                                                    className="screenshot-delete-btn"
+                                                    title="Delete screenshot"
+                                                    aria-label="Delete screenshot"
+                                                >
+                                                    <i className="fa fa-trash"></i>
+                                                </button>
+                                            )}
                                         </div>
                                     </article>
                                 </div>

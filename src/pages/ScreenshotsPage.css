@@ -33,9 +33,9 @@
     transition: transform 0.3s ease-in-out;
 }
 
-    .screenshot-image:hover {
-        transform: scale(1.03);
-    }
+.screenshot-image:hover {
+    transform: scale(1.03);
+}
 
 .screenshot-info {
     display: flex;
@@ -53,9 +53,9 @@
     border-radius: 2px;
 }
 
-    .block.active {
-        background-color: var(--hs-success);
-    }
+.block.active {
+    background-color: var(--hs-success);
+}
 
 .delete-btn {
     border: none;
@@ -65,10 +65,10 @@
     transition: color 0.2s ease-in-out;
 }
 
-    .delete-btn:hover {
-        color: var(--hs-error);
-        opacity: 0.8;
-    }
+.delete-btn:hover {
+    color: var(--hs-error);
+    opacity: 0.8;
+}
 
 .container {
     font-family: 'Comfortaa';
@@ -87,9 +87,9 @@
     border-radius: 2px;
 }
 
-    .block.active {
-        background-color: var(--hs-success);
-    }
+.block.active {
+    background-color: var(--hs-success);
+}
 
 body {
     background-color: var(--hs-bg-page);
@@ -159,9 +159,9 @@ body {
     padding: 5px;
 }
 
-    .calendar-toggle-btn:hover {
-        color: var(--hs-primary);
-    }
+.calendar-toggle-btn:hover {
+    color: var(--hs-primary);
+}
 
 .data-dot {
     width: 6px;
@@ -186,9 +186,9 @@ body {
     padding: 5px;
 }
 
-    .calendar-toggle-btn:hover {
-        color: var(--hs-primary);
-    }
+.calendar-toggle-btn:hover {
+    color: var(--hs-primary);
+}
 
 .custom-calendar-container {
     position: absolute;
@@ -223,10 +223,10 @@ body {
     padding: 5px 10px;
 }
 
-    .calendar-nav-btn:hover {
-        background-color: var(--hs-bg-hover);
-        border-radius: 4px;
-    }
+.calendar-nav-btn:hover {
+    background-color: var(--hs-bg-hover);
+    border-radius: 4px;
+}
 
 .calendar-month {
     font-size: 16px;
@@ -246,7 +246,7 @@ body {
 .calendar-days {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-/*    gap: 5px;*/
+    /*    gap: 5px;*/
 }
 
 .calendar-day {
@@ -263,23 +263,23 @@ body {
     align-items: center;
 }
 
-    .calendar-day:hover {
-        background-color: var(--hs-bg-hover);
-    }
+.calendar-day:hover {
+    background-color: var(--hs-bg-hover);
+}
 
-    .calendar-day.selected {
-        background-color: var(--hs-primary);
-        color: var(--hs-text-on-color);
-    }
+.calendar-day.selected {
+    background-color: var(--hs-primary);
+    color: var(--hs-text-on-color);
+}
 
-    .calendar-day.today {
-        background-color: var(--hs-primary-light);
-        font-weight: bold;
-    }
+.calendar-day.today {
+    background-color: var(--hs-primary-light);
+    font-weight: bold;
+}
 
-    .calendar-day.other-month {
-        color: var(--hs-text-muted);
-    }
+.calendar-day.other-month {
+    color: var(--hs-text-muted);
+}
 
 .day-dot {
     position: absolute;
@@ -308,9 +308,9 @@ body {
     transition: transform 0.2s;
 }
 
-    .screenshot-image:hover {
-        transform: scale(1.05);
-    }
+.screenshot-image:hover {
+    transform: scale(1.05);
+}
 
 .screenshot-info {
     margin-top: 8px;
@@ -330,9 +330,9 @@ body {
     border-radius: 1px;
 }
 
-    .block.active {
-        background-color: var(--hs-success);
-    }
+.block.active {
+    background-color: var(--hs-success);
+}
 
 .delete-btn {
     background: none;
@@ -342,10 +342,10 @@ body {
     padding: 2px 5px;
 }
 
-    .delete-btn:hover {
-        color: var(--hs-error);
-        opacity: 0.8;
-    }
+.delete-btn:hover {
+    color: var(--hs-error);
+    opacity: 0.8;
+}
 
 .no-screenshots {
     text-align: center;
@@ -378,9 +378,10 @@ span.mx-2 {
     white-space: nowrap;
 }
 
-.table{
+.table {
     color: var(--hs-text-primary);
 }
+
 .card-header-background {
     background: var(--hs-bg-surface) !important;
 }
@@ -711,6 +712,10 @@ span.mx-2 {
     background: var(--hs-bg-elevated);
     box-shadow: var(--hs-shadow-xl);
     transform: translateX(-50%);
+}
+
+.screenshots-calendar-popover-screen {
+    left: 50%;
 }
 
 .screenshots-calendar-header {

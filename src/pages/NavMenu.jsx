@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../features/auth/authSlice';
+import Swal from 'sweetalert2';
 import { resetUserState } from '../features/user/userSlice';
 import './NavMenu.css';
 
@@ -21,6 +22,15 @@ const NavMenu = () => {
     const closeProfileDropdown = () => setShowProfileDropdown(false);
 
     const onProfileLogoutClicked = async () => {
+        const result = await Swal.fire({
+            title: 'Logout',
+            text: 'Are you sure you want to logout?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, logout',
+            cancelButtonText: 'Cancel',
+        });
+        if (!result.isConfirmed) return;
         dispatch(resetUserState());
         await dispatch(logout());
         navigate('/login');

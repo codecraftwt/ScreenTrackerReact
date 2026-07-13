@@ -465,9 +465,6 @@ export const sendTokenToWorker = createAsyncThunk(
     'user/sendTokenToWorker',
     async (_, { rejectWithValue }) => {
         try {
-            // Token passing to the background worker is intentionally disabled.
-            // Keeping the original code commented so it can be restored if needed.
-            /*
             const token = localStorage.getItem("authToken");
 
             console.log("Token from localStorage:", token);
@@ -488,7 +485,6 @@ export const sendTokenToWorker = createAsyncThunk(
                 const errorText = await response.text();
                 return rejectWithValue(errorText || "Failed to send token");
             }
-            */
             return true;
         } catch (error) {
             return rejectWithValue(error.message);
