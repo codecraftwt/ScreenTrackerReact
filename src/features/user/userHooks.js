@@ -38,7 +38,7 @@ import {
     clearUserError,
     uploadScreenshot,
     getScreenshotById,
-    // sendTokenToWorker,
+    sendTokenToWorker,
     clearCurrentUser
 } from './userSlice';
 
@@ -86,8 +86,7 @@ export const useUser = () => {
         getAppTitleByUserId: (userId) => dispatch(getAppTitleByUserId(userId)).unwrap(),
         getActiveUsers: (adminId = null) => dispatch(getActiveUsers(adminId)).unwrap(),
         getActiveSessions: (adminId = null) => dispatch(getActiveSessions(adminId)).unwrap(),
-        // Background worker token action is intentionally disabled.
-        // sendTokenToWorker: () => dispatch(sendTokenToWorker()).unwrap(),
+        sendTokenToWorker: () => dispatch(sendTokenToWorker()).unwrap(),
         getScreenshotById: (id) => dispatch(getScreenshotById(id)).unwrap(),
         getTodayDailyTracker: (userId, fromDate, toDate, searchString, page, pageSize, usageType = 'all') => {
             if (typeof userId === 'object') {

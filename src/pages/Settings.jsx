@@ -15,6 +15,7 @@ const Settings = () => {
         updateActiveStatus,
         updateManualTrackingAuth,
         updateAutoTrackingAuth,
+        updateDeleteAuth
     } = useUser();
 
     const [isSuperAdmin, setIsSuperAdmin] = useState(false);
@@ -279,6 +280,8 @@ const Settings = () => {
             result = await updateAutoTrackingAuth(userId, currentUserId, nextValue);
         } else if (field === 'isActive') {
             result = await updateActiveStatus(userId, currentUserId, nextValue);
+        } else if (field === 'isSelected') {
+            result = await updateDeleteAuth(userId, currentUserId, nextValue);
         }
 
         if (result?.meta?.requestStatus !== 'fulfilled') {
@@ -402,10 +405,11 @@ const Settings = () => {
                             <table className="users-table" key={currentPage}>
                                 <thead>
                                     <tr>
-                                        <th className="text-start table-headers">Username</th>
+                                        <th className="text-start table-headers">Username</th>                                      
                                         <th className="text-center table-headers">Manual Tracking</th>
                                         <th className="text-center table-headers">Auto Tracking</th>
                                         <th className="text-center table-headers">Active Status</th>
+                                          <th className="text-center table-headers">Delete Auth</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -449,6 +453,16 @@ const Settings = () => {
                                                         type="checkbox"
                                                         checked={getBool(user, 'isActive', 'IsActive')}
                                                         onChange={() => handleToggle(user, 'isActive', getBool(user, 'isActive', 'IsActive'))}
+                                                    />
+                                                    <span className="toggle-slider span-color"></span>
+                                                </label>
+                                            </td>
+                                            <td className="permission-cell">
+                                                <label className="toggle-switch">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={getBool(user, 'isSelected', 'IsSelected')}
+                                                        onChange={() => handleToggle(user, 'isSelected', getBool(user, 'isSelected', 'IsSelected'))}
                                                     />
                                                     <span className="toggle-slider span-color"></span>
                                                 </label>

@@ -61,7 +61,8 @@ const AdminUsers = () => {
         getAllUsers, 
         getUserById, 
         promoteToAdmin: promoteToAdminRedux, 
-        deleteUser: deleteUserRedux
+        deleteUser: deleteUserRedux,
+        updateDeleteAuth: updateDeleteAuthRedux
     } = useUser();
     
     // Get user info from token
@@ -320,6 +321,7 @@ useEffect(() => {
                                                     <th>Email</th>
                                                     <th>Phone</th>
                                                     <th>Status</th>
+                                                    {/* <th>Delete Auth</th> */}
                                                     <th>Tracking</th>
                                                     <th>Created Date</th>
                                                     <th>Actions</th>
@@ -334,6 +336,15 @@ useEffect(() => {
                                                     const role = String(valueOf(user, 'role', 'Role') || '').toLowerCase();
                                                     const manualTracking = valueOf(user, 'isManualTrackingEnabled', 'IsManualTrackingEnabled') === true;
                                                     const autoTracking = valueOf(user, 'isAutoTrackingEnabled', 'IsAutoTrackingEnabled') === true;
+                                                    const deleteAuth = valueOf(user, 'isSelected', 'IsSelected') === true;
+
+                                                    const handleDeleteAuthToggle = async () => {
+                                                        const nextValue = !deleteAuth;
+                                                        const reduxResult = await updateDeleteAuthRedux(userId, currentUserId, nextValue);
+                                                        if (reduxResult.meta.requestStatus === 'fulfilled') {
+                                                            await loadUsers(effectiveAdminId, userRole || 'admin');
+                                                        }
+                                                    };
 
                                                     return (
                                                         <tr key={userId}>
@@ -353,6 +364,16 @@ useEffect(() => {
                                                                     {isActive ? 'Active' : 'Inactive'}
                                                                 </span>
                                                             </td>
+                                                            {/* <td>
+                                                                <label className="toggle-switch">
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        checked={deleteAuth}
+                                                                        onChange={handleDeleteAuthToggle}
+                                                                    />
+                                                                    <span className="toggle-slider"></span>
+                                                                </label>
+                                                            </td> */}
                                                             <td>
                                                                 <div className="tracking-indicators">
                                                                     {manualTracking && (
