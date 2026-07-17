@@ -326,9 +326,9 @@ export const getAppUsageData = createAsyncThunk(
 
 export const getGroupedCategoryKeywords = createAsyncThunk(
     'user/getGroupedCategoryKeywords',
-    async ({ id, date, page, take }, { rejectWithValue }) => {
+    async ({ id, date, page, take, usageType, appName }, { rejectWithValue }) => {
         try {
-            const data = await userService.getGroupedCategoryKeywords(id, date, page, take);
+            const data = await userService.getGroupedCategoryKeywords(id, date, page, take, usageType, appName);
             return data;
         } catch (error) {
             return rejectWithValue(error.message || 'Failed to fetch grouped categories');
@@ -372,9 +372,9 @@ export const getAppTitleByUserId = createAsyncThunk(
 
 export const getAppTitleDetails = createAsyncThunk(
     'user/getAppTitleDetails',
-    async ({ date, userId, appName, page, take }, { rejectWithValue }) => {
+    async ({ date, userId, appName, page, take, usageType }, { rejectWithValue }) => {
         try {
-            const data = await userService.getAppTitleDetails(date, userId, appName, page, take);
+            const data = await userService.getAppTitleDetails(date, userId, appName, page, take, usageType);
             return data;
         } catch (error) {
             return rejectWithValue(error.message || 'Failed to fetch app title details');
@@ -465,9 +465,6 @@ export const sendTokenToWorker = createAsyncThunk(
     'user/sendTokenToWorker',
     async (_, { rejectWithValue }) => {
         try {
-            // Token passing to the background worker is intentionally disabled.
-            // Keeping the original code commented so it can be restored if needed.
-            /*
             const token = localStorage.getItem("authToken");
 
             console.log("Token from localStorage:", token);
@@ -488,7 +485,6 @@ export const sendTokenToWorker = createAsyncThunk(
                 const errorText = await response.text();
                 return rejectWithValue(errorText || "Failed to send token");
             }
-            */
             return true;
         } catch (error) {
             return rejectWithValue(error.message);

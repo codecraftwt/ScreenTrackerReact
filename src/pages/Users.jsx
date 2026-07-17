@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Select from 'react-select';
@@ -75,6 +75,13 @@ const getEntityId = (entity) => Number(valueOf(entity, 'id', 'Id')) || 0;
 
 const getEntityUsername = (entity) => valueOf(entity, 'username', 'Username', 'name', 'Name') || '';
 
+const matchesUsageType = (entity, usageType) => {
+    if (usageType === 'all') return true;
+
+    const startMode = valueOf(entity, 'startMode', 'StartMode', 'usageType', 'UsageType');
+    return typeof startMode === 'string' && startMode.toLowerCase() === usageType;
+};
+
 const getDashboardSelectionKey = (authUser) => {
     if (!authUser) return '';
     return `${DASHBOARD_SELECTION_KEY_PREFIX}:${String(authUser.role || '').toLowerCase()}:${authUser.id || 0}`;
@@ -137,10 +144,12 @@ const minutesFromTime = (value) => {
 };
 
 const formatDuration = (minutes) => {
-    const value = Math.max(0, numberValue(minutes));
-    const hours = Math.floor(value / 60);
-    const remainingMinutes = Math.floor(value % 60);
-    const seconds = Math.floor((value % 1) * 60);
+    const totalSeconds = Math.round(Math.max(0, numberValue(minutes)) * 60);
+
+    const hours = Math.floor(totalSeconds / 3600);
+    const remainingMinutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
     return `${hours}h ${remainingMinutes}m ${seconds}s`;
 };
 
@@ -267,10 +276,10 @@ const {
     getAfkLogsTotal,
     getAppUsageData,
     getAppUsageByUserId,
+    getAppTitleDetails,
     getDayUsageCount,
     getTodaysStartTracker,
-    // sendTokenToWorker,
-    getCategoryByAppName,
+    sendTokenToWorker,
     getGroupedCategoryKeywords,
     addAfkLog,
     currentUser
@@ -298,6 +307,7 @@ const {
     const [trackedDate, setTrackedDate] = useState('');
     const [aggregate, setAggregate] = useState(emptyAggregate);
     const [topApps, setTopApps] = useState([]);
+    const [totalActiveAppMinutes, setTotalActiveAppMinutes] = useState(0);
     const [allTopApps, setAllTopApps] = useState([]);
     const [initialTopApps, setInitialTopApps] = useState([]);
     const [currentAppUsagePage, setCurrentAppUsagePage] = useState(1);
@@ -321,6 +331,7 @@ const {
     const [isCalendarOpen, setIsCalendarOpen] = useState(false);
     const [calendarMonth, setCalendarMonth] = useState(() => new Date(selectedDate));
     const calendarRef = useRef(null);
+    const selectedUserDataRequestRef = useRef(0);
 
     useEffect(() => {
         const observer = new MutationObserver(() => {
@@ -364,9 +375,13 @@ const {
         const result = await getUserById(userId);
         const manual = Boolean(result?.isManualTrackingEnabled ?? result?.IsManualTrackingEnabled);
         const auto = Boolean(result?.isAutoTrackingEnabled ?? result?.IsAutoTrackingEnabled);
+        const savedIsOn = localStorage.getItem('IsOnState') === 'true';
+        const nextPermissions = { manual, auto };
 
-        setPermissions({ manual, auto });
-        setIsOn(manual && !auto ? true : localStorage.getItem('IsOnState') === 'true');
+        setPermissions(nextPermissions);
+        setIsOn(manual ? savedIsOn : false);
+
+        return nextPermissions;
     };
 
     const recalculateAppPercents = (apps) => {
@@ -385,47 +400,118 @@ const {
         }));
     };
 
+    const getTitlesMatchingTopAppDuration = (titles, topAppDuration) => {
+        if (!titles?.length || topAppDuration <= 0) {
+            return [];
+        }
+
+        const groupedTitles = Object.values(titles.reduce((acc, item) => {
+            const title = valueOf(item, 'title', 'Title') || 'Unknown / No Window Title';
+            const duration = numberValue(valueOf(item, 'durationInMinutes', 'DurationInMinutes'));
+
+            if (duration <= 0) {
+                return acc;
+            }
+
+            if (!acc[title]) {
+                acc[title] = {
+                    title,
+                    duration: 0,
+                    color: dynamicColor(title)
+                };
+            }
+
+            acc[title].duration += duration;
+            return acc;
+        }, {}))
+            .filter((title) => title.duration > 0)
+            .sort((a, b) => b.duration - a.duration);
+
+        const titlesTotal = groupedTitles.reduce((sum, title) => sum + title.duration, 0);
+        if (titlesTotal <= 0) {
+            return [];
+        }
+
+        const targetTotalSeconds = Math.round(topAppDuration * 60);
+        const scaledTitles = groupedTitles.map((title) => {
+            const scaledSeconds = (title.duration / titlesTotal) * targetTotalSeconds;
+            const floorSeconds = Math.floor(scaledSeconds);
+
+            return {
+                ...title,
+                floorSeconds,
+                remainder: scaledSeconds - floorSeconds
+            };
+        });
+
+        const usedSeconds = scaledTitles.reduce((sum, title) => sum + title.floorSeconds, 0);
+        const remainingSeconds = targetTotalSeconds - usedSeconds;
+
+        return scaledTitles
+            .sort((a, b) => b.remainder - a.remainder)
+            .map((title, index) => ({
+                title: title.title,
+                duration: (title.floorSeconds + (index < remainingSeconds ? 1 : 0)) / 60,
+                percent: 0,
+                color: title.color
+            }))
+            .filter((title) => Math.round(title.duration * 60) > 0)
+            .sort((a, b) => b.duration - a.duration);
+    };
+
     const loadSelectedUserData = async (userId, date, usageType, role) => {
         if (!userId) return;
+
+        const requestId = ++selectedUserDataRequestRef.current;
 
         setIsChartLoading(true);
         setIsAppUsageLoading(true);
         setIsAfkDataLoading(true);
 
         try {
-            const results = await Promise.allSettled([
-                getUserLoginTimeFormatted(userId),
-                getDailyTrackerAggregate({ userId, date, startMode: usageType }),
-                getAppUsageData({ id: userId, usageType, userRole: role }),
-                getAppUsageByUserId({ userId, date, page: 1, take: PAGE_SIZE, usageType, userRole: role }),
-                getDayUsageCount({ date, userId, usageType }),
-                getAfkLogsTotal({ userId, date, userRole: role, startMode: usageType }),
-                getAppTitleByUserId(userId),
-                getGroupedCategoryKeywords({ id: userId, date, page: 1, take: PAGE_SIZE }),
-                getTodaysStartTracker(userId)
-            ]);
+        const results = await Promise.allSettled([
+    getUserLoginTimeFormatted(userId),
+    getDailyTrackerAggregate({ userId, date, startMode: usageType }),
+    getAppUsageData({ id: userId, usageType, userRole: role }),
 
-            const [
-                loginResult,
-                aggregateResult,
-                chartResult,
-                appUsageResult,
-                usageCountResult,
-                afkTotalResult,
-                appTitlesResult,
-                categoriesResult,
-                startTrackerResult
-            ] = [
-                settledValue(results[0], null),
-                settledValue(results[1], emptyAggregate),
-                settledValue(results[2], []),
-                settledValue(results[3], []),
-                settledValue(results[4], 0),
-                settledValue(results[5], 0),
-                settledValue(results[6], []),
-                settledValue(results[7], []),
-                settledValue(results[8], null)
-            ];
+    // First page for Top Applications UI
+    getAppUsageByUserId({ userId, date, page: 1, take: PAGE_SIZE, usageType, userRole: role }),
+
+    // Count for Show More
+    getDayUsageCount({ date, userId, usageType }),
+
+    // All Top Applications records for exact Active Time calculation
+    getAppUsageByUserId({ userId, date, page: 1, take: 2147483647, usageType, userRole: role }),
+
+    getAfkLogsTotal({ userId, date, userRole: role, startMode: usageType }),
+    getAppTitleByUserId(userId),
+    getGroupedCategoryKeywords({ id: userId, date, page: 1, take: PAGE_SIZE, usageType }),
+    getTodaysStartTracker(userId)
+]);
+
+         const [
+    loginResult,
+    aggregateResult,
+    chartResult,
+    appUsageResult,
+    usageCountResult,
+    allAppUsageResult,
+    afkTotalResult,
+    appTitlesResult,
+    categoriesResult,
+    startTrackerResult
+] = [
+    settledValue(results[0], null),
+    settledValue(results[1], emptyAggregate),
+    settledValue(results[2], []),
+    settledValue(results[3], []),
+    settledValue(results[4], 0),
+    settledValue(results[5], []),
+    settledValue(results[6], 0),
+    settledValue(results[7], []),
+    settledValue(results[8], []),
+    settledValue(results[9], null)
+];
 
             const login = loginResult || '--:--';
             const aggregateResponse = aggregateResult || emptyAggregate;
@@ -433,9 +519,32 @@ const {
 
             const appUsageResponse = arrayValue(appUsageResult);
             const usageCount = usageCountResult || 0;
+            const allAppUsageResponse = arrayValue(allAppUsageResult);
+
+            // "All" must equal the values shown by the Automatic and Manual
+            // filters. Fetch those modes independently so each subtotal can be
+            // rounded to whole seconds before they are added.
+            let allModeActiveRows = null;
+            if (usageType === 'all') {
+                const modeResults = await Promise.allSettled([
+                    getAppUsageByUserId({
+                        userId, date, page: 1, take: 2147483647,
+                        usageType: 'automatic', userRole: role
+                    }),
+                    getAppUsageByUserId({
+                        userId, date, page: 1, take: 2147483647,
+                        usageType: 'manual', userRole: role
+                    })
+                ]);
+
+                allModeActiveRows = {
+                    automatic: arrayValue(settledValue(modeResults[0], [])),
+                    manual: arrayValue(settledValue(modeResults[1], []))
+                };
+            }
             const selectedDayTitleRows = arrayValue(appTitlesResult).filter((item) => {
                 const start = valueOf(item, 'startTime', 'StartTime');
-                return isWithinLocalDay(start, date);
+                return isWithinLocalDay(start, date) && matchesUsageType(item, usageType);
             });
 
             const historicalAppUsage = Object.values(
@@ -520,6 +629,8 @@ const {
                 dailyTotalsByDate[chartDate] = settledValue(dailyTotals[index], null);
             });
 
+            if (requestId !== selectedUserDataRequestRef.current) return;
+
             const normalizedChart = applyDailyTotalsToChart(
                 chartRows,
                 date,
@@ -550,15 +661,65 @@ const {
                 })
                 .sort((a, b) => b.duration - a.duration);
 
+       const allAppRowsForTotal = allAppUsageResponse.length > 0
+    ? allAppUsageResponse
+    : appUsageResponse.length > 0
+        ? appUsageResponse
+        : historicalAppUsage;
+const sumActiveMinutes = (rows) => rows.reduce((sum, app) => (
+    sum + numberValue(valueOf(
+        app,
+        'durationInMinutes',
+        'DurationInMinutes',
+        'totalDurationInMinutes',
+        'TotalDurationInMinutes'
+    ))
+), 0);
+
+const activeAppMinutes = allModeActiveRows
+    ? (
+        Math.round(sumActiveMinutes(allModeActiveRows.automatic) * 60)
+        + Math.round(sumActiveMinutes(allModeActiveRows.manual) * 60)
+    ) / 60
+    : sumActiveMinutes(allAppRowsForTotal);
+
+setTotalActiveAppMinutes(activeAppMinutes);
+
+            // Keep card calculations untouched. For the selected date only, copy
+            // the exact values displayed by the cards into the graph datasets.
+            // Historical graph days continue to use their existing API values.
+            const cardAlignedChart = normalizedChart.map((row) => {
+                if (dateKey(row.date) !== dateKey(date)) {
+                    return row;
+                }
+
+                return {
+                    ...row,
+                    active: activeAppMinutes,
+                    afk: afkTotalMinutes,
+                    total: activeAppMinutes + afkTotalMinutes
+                };
+            });
+
             const initialApps = recalculateAppPercents(appRows.slice(0, PAGE_SIZE));
             setLoginTime(login || '--:--');
-            setCheckinTime(formatTimeOfDay(startTracker));
+            const hasSelectedModeData = normalizedAggregate.totalDurationMinutes > 0
+                || normalizedAggregate.activeDurationMinutes > 0
+                || normalizedAggregate.afkDurationMinutes > 0
+                || activeAppMinutes > 0;
+            const isTodaySelected = dateKey(date) === toLocalDateInputValue();
+
+            setCheckinTime(
+                isTodaySelected && hasSelectedModeData
+                    ? formatTimeOfDay(startTracker)
+                    : 'No entry today'
+            );
             setTrackedDate(formatTrackedDate(startTracker));
             setAggregate(normalizedAggregate);
-            setChartLabels(normalizedChart.map((x) => x.date));
-            setTotalData(normalizedChart.map((x) => x.total));
-            setAfkData(normalizedChart.map((x) => x.afk));
-            setActiveData(normalizedChart.map((x) => x.active));
+            setChartLabels(cardAlignedChart.map((x) => x.date));
+            setTotalData(cardAlignedChart.map((x) => x.total));
+            setAfkData(cardAlignedChart.map((x) => x.afk));
+            setActiveData(cardAlignedChart.map((x) => x.active));
             setAllTopApps(appRows);
             setTopApps(initialApps);
             setInitialTopApps(initialApps);
@@ -585,9 +746,11 @@ const {
                 };
             }));
         } finally {
-            setIsChartLoading(false);
-            setIsAppUsageLoading(false);
-            setIsAfkDataLoading(false);
+            if (requestId === selectedUserDataRequestRef.current) {
+                setIsChartLoading(false);
+                setIsAppUsageLoading(false);
+                setIsAfkDataLoading(false);
+            }
         }
     };
 useEffect(() => {
@@ -610,23 +773,12 @@ useEffect(() => {
 
         await loadTrackingPermissions(authUser.id);
 
-        // Frontend tracking save is intentionally disabled for view-only mode.
-        // Keeping the original automatic tracker start commented so it can be restored if needed.
-        /*
-        if (authUser.role !== 'superadmin') {
-            await startDailyTracker({
-                userId: authUser.id,
-                startMode: 'automatic'
-            });
-        }
-        */
+        // Opening a reporting page must not create a tracking session. Tracking
+        // starts only after an explicit toggle (or in the desktop worker).
     };
 
     initializeDailyTracker();
 }, [authUser, navigate]);
-// Background worker token call is intentionally disabled.
-// Keeping the original effect commented so it can be restored if needed.
-/*
 useEffect(() => {
     const token = localStorage.getItem("authToken");
 
@@ -639,7 +791,6 @@ useEffect(() => {
         .then(() => console.log("JWT token sent to worker"))
         .catch((error) => console.error("Failed to send token to worker:", error));
 }, [sendTokenToWorker]);
-*/
 
     useEffect(() => {
         const loadRoleLists = async () => {
@@ -751,51 +902,61 @@ useEffect(() => {
             return;
         }
 
-        const [groupedCategoriesResult] = await Promise.all([
-            getCategoryByAppName(selectedAppName)
+        const [titleDetailsResult, groupedCategoriesResult] = await Promise.all([
+            getAppTitleDetails({
+                date: selectedDate,
+                userId: selectedUserId,
+                appName: selectedAppName,
+                page: 1,
+                take: 2147483647,
+                usageType: selectedUsageType
+            }),
+            getGroupedCategoryKeywords({
+                id: selectedUserId,
+                date: selectedDate,
+                page: 1,
+                take: 2147483647,
+                usageType: selectedUsageType,
+                appName: selectedAppName
+            })
         ]);
 
-        const selectedAppTitles = allAppTitleRows.filter((title) => {
+        const fallbackSelectedAppTitles = allAppTitleRows.filter((title) => {
             const appName = valueOf(title, 'appName', 'AppName') ?? '';
             return appName.toLowerCase() === selectedAppName.toLowerCase();
         });
 
-        const groupedTitles = Object.values(
-            selectedAppTitles.reduce((acc, item) => {
-                const title = valueOf(item, 'title', 'Title') ?? '';
-                const duration = numberValue(valueOf(
-                    item,
-                    'durationInMinutes',
-                    'DurationInMinutes',
-                    'totalDurationInMinutes',
-                    'TotalDurationInMinutes'
-                ));
-
-                if (!acc[title]) {
-                    acc[title] = {
-                        title,
-                        duration: 0,
-                        percent: 0,
-                        color: dynamicColor(title)
-                    };
-                }
-
-                acc[title].duration += duration;
-                return acc;
-            }, {})
-        ).sort((a, b) => b.duration - a.duration);
-
+        // AppTitle/AppDetails returns an aggregated DTO containing only
+        // title + durationInMinutes. It does not include StartMode, so applying
+        // matchesUsageType here removes every valid Manual/Automatic title.
+        // The requested usageType is already sent to the API.
+        const titleRows = arrayValue(titleDetailsResult);
+        const selectedAppTitles = titleRows.length > 0 ? titleRows : fallbackSelectedAppTitles;
+        const selectedApp = allTopApps.find(
+            (app) => app.name?.toLowerCase() === selectedAppName.toLowerCase()
+        );
+        const topAppDuration = selectedApp
+            ? selectedApp.duration
+            : selectedAppTitles.reduce((sum, item) => (
+                sum + numberValue(valueOf(item, 'durationInMinutes', 'DurationInMinutes'))
+            ), 0);
+        const finalTitles = getTitlesMatchingTopAppDuration(selectedAppTitles, topAppDuration);
+        
+        
         const appCategories = arrayValue(groupedCategoriesResult);
 
-        const allTitles = recalculateTitlePercents(groupedTitles);
-        const initialTitles = recalculateTitlePercents(groupedTitles.slice(0, PAGE_SIZE));
+        // const allTitles = recalculateTitlePercents(groupedTitles);
+        // const initialTitles = recalculateTitlePercents(groupedTitles.slice(0, PAGE_SIZE));
+
+        const allTitles = recalculateTitlePercents(finalTitles);
+        const initialTitles = recalculateTitlePercents(finalTitles.slice(0, PAGE_SIZE));
 
         setAllWindowTitles(allTitles);
         setWindowTitles(initialTitles);
         setInitialWindowTitles(initialTitles);
         setCurrentTitlePage(1);
-        setTotalAppTitleRecords(groupedTitles.length);
-        setMoreTitlesAvailable(groupedTitles.length > PAGE_SIZE);
+        setTotalAppTitleRecords(allTitles.length);
+        setMoreTitlesAvailable(allTitles.length > PAGE_SIZE);
 
         setCategories(appCategories.map((category) => {
             const name = valueOf(category, 'category', 'Category') ?? 'Uncategorized';
@@ -820,9 +981,12 @@ useEffect(() => {
 }, [
     selectedAppName,
     selectedDate,
+    selectedUsageType,
     selectedUserId,
     allAppTitleRows,
-    getCategoryByAppName
+    allTopApps,
+    getGroupedCategoryKeywords,
+    getAppTitleDetails
 ]);
 
     const trackedDateSet = useMemo(() => {
@@ -1006,9 +1170,6 @@ useEffect(() => {
         const nextValue = !isOn;
 
         try {
-            // Frontend tracking save is intentionally disabled for view-only mode.
-            // Keeping the original start/end tracker calls commented so they can be restored if needed.
-            /*
             if (permissions.manual && !permissions.auto) {
                 if (nextValue) {
                     await startDailyTracker({ userId: selectedUserId, startMode: 'manual' });
@@ -1024,7 +1185,6 @@ useEffect(() => {
             } else {
                 return;
             }
-            */
 
             setIsOn(nextValue);
             localStorage.setItem('IsOnState', String(nextValue));
@@ -1034,9 +1194,16 @@ useEffect(() => {
         }
     };
 
-    const totalTime = formatDuration(aggregate.totalDurationMinutes);
-    const idealTime = formatDuration(aggregate.afkDurationMinutes);
-    const activeTime = formatDuration(aggregate.activeDurationMinutes || Math.max(0, aggregate.totalDurationMinutes - aggregate.afkDurationMinutes));
+    // const totalTime = formatDuration(aggregate.totalDurationMinutes);
+    // const idealTime = formatDuration(aggregate.afkDurationMinutes);
+    // const activeTime = formatDuration(aggregate.activeDurationMinutes || Math.max(0, aggregate.totalDurationMinutes - aggregate.afkDurationMinutes));
+
+    const idealMinutes = numberValue(aggregate.afkDurationMinutes);
+
+const activeTime = formatDuration(totalActiveAppMinutes);
+const idealTime = formatDuration(idealMinutes);
+const totalTime = formatDuration(totalActiveAppMinutes + idealMinutes);
+
     const maxSelectableDate = toLocalDateInputValue();
     const adminOptions = admins.map((admin) => ({ value: getEntityUsername(admin), label: getEntityUsername(admin) }));
     const userOptions = users.map((user) => ({ value: getEntityId(user), label: getEntityUsername(user) }));

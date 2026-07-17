@@ -38,7 +38,7 @@ import {
     clearUserError,
     uploadScreenshot,
     getScreenshotById,
-    // sendTokenToWorker,
+    sendTokenToWorker,
     clearCurrentUser
 } from './userSlice';
 
@@ -86,8 +86,7 @@ export const useUser = () => {
         getAppTitleByUserId: (userId) => dispatch(getAppTitleByUserId(userId)).unwrap(),
         getActiveUsers: (adminId = null) => dispatch(getActiveUsers(adminId)).unwrap(),
         getActiveSessions: (adminId = null) => dispatch(getActiveSessions(adminId)).unwrap(),
-        // Background worker token action is intentionally disabled.
-        // sendTokenToWorker: () => dispatch(sendTokenToWorker()).unwrap(),
+        sendTokenToWorker: () => dispatch(sendTokenToWorker()).unwrap(),
         getScreenshotById: (id) => dispatch(getScreenshotById(id)).unwrap(),
         getTodayDailyTracker: (userId, fromDate, toDate, searchString, page, pageSize, usageType = 'all') => {
             if (typeof userId === 'object') {
@@ -142,11 +141,11 @@ export const useUser = () => {
             }
             return dispatch(getAppUsageData({ id, usageType, userRole })).unwrap();
         },
-        getGroupedCategoryKeywords: (id, date, page = 1, take = 5) => {
+        getGroupedCategoryKeywords: (id, date, page = 1, take = 5, usageType = 'all', appName = '') => {
             if (typeof id === 'object') {
                 return dispatch(getGroupedCategoryKeywords(id)).unwrap();
             }
-            return dispatch(getGroupedCategoryKeywords({ id, date, page, take })).unwrap();
+            return dispatch(getGroupedCategoryKeywords({ id, date, page, take, usageType, appName })).unwrap();
         },
         getAppUsageByUserId: (userId, date, page = 1, take = 5, usageType = 'all', userRole = 'user') => {
             if (typeof userId === 'object') {
@@ -160,11 +159,11 @@ export const useUser = () => {
             }
             return dispatch(getAppTitleByDate({ date, userId, page, take })).unwrap();
         },
-        getAppTitleDetails: (date, userId, appName, page = 1, take = 5) => {
+        getAppTitleDetails: (date, userId, appName, page = 1, take = 5, usageType = 'all') => {
             if (typeof date === 'object') {
                 return dispatch(getAppTitleDetails(date)).unwrap();
             }
-            return dispatch(getAppTitleDetails({ date, userId, appName, page, take })).unwrap();
+            return dispatch(getAppTitleDetails({ date, userId, appName, page, take, usageType })).unwrap();
         },
         addAppTitleUsage: (data) =>
     dispatch(addAppTitleUsage(data)).unwrap(),

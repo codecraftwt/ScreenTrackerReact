@@ -1515,6 +1515,11 @@ img, svg, canvas, video, audio, iframe {
 /* ==========================================================================
    SWEETALERT2 THEME OVERRIDES
    ========================================================================== */
+.swal2-container {
+  /* Keep confirmations above dashboard toolbars, select menus, and profile overlays. */
+  z-index: 2147483647 !important;
+}
+
 .swal2-popup {
   background: var(--hs-bg-modal) !important;
   color: var(--hs-text-primary) !important;

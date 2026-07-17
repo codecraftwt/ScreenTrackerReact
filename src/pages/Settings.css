@@ -130,7 +130,7 @@
 
 .settings-container .users-table th:nth-child(1),
 .settings-container .users-table td:nth-child(1) {
-    width: 40%;
+    width: 35%;
 }
 
 .settings-container .users-table th:nth-child(2),
@@ -138,8 +138,10 @@
 .settings-container .users-table th:nth-child(3),
 .settings-container .users-table td:nth-child(3),
 .settings-container .users-table th:nth-child(4),
-.settings-container .users-table td:nth-child(4) {
-    width: 20%;
+.settings-container .users-table td:nth-child(4),
+.settings-container .users-table th:nth-child(5),
+.settings-container .users-table td:nth-child(5) {
+    width: 16.25%;
 }
 
 .settings-container .users-table th {

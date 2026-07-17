@@ -3,9 +3,9 @@ import store from '../app/store';
 
 // Base URL corresponding to App.xaml.cs in Windows app
 // const BASE_URL = 'http://screentracker.walstargroup.org/api';
-// const BASE_URL = 'http://localhost:5011/api';
+const BASE_URL = 'http://localhost:5011/api';
 //  public static string BaseUrl { get; set; } = "http://10.0.3.55:90";
- const BASE_URL = 'http://10.0.3.55:90/api';
+//  const BASE_URL = 'http://10.0.3.55:90/api';
 
 const api = axios.create({
     baseURL: BASE_URL,
