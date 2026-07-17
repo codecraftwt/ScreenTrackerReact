@@ -82,6 +82,10 @@ const matchesUsageType = (entity, usageType) => {
     return typeof startMode === 'string' && startMode.toLowerCase() === usageType;
 };
 
+const hasUsageType = (entity) => (
+    valueOf(entity, 'startMode', 'StartMode', 'usageType', 'UsageType') !== undefined
+);
+
 const getDashboardSelectionKey = (authUser) => {
     if (!authUser) return '';
     return `${DASHBOARD_SELECTION_KEY_PREFIX}:${String(authUser.role || '').toLowerCase()}:${authUser.id || 0}`;
@@ -657,6 +661,20 @@ const activeAppMinutes = allAppRowsForTotal.reduce((sum, app) => {
 
 setTotalActiveAppMinutes(activeAppMinutes);
 
+            // Match the Windows dashboard: the selected day's cards and graph use
+            // Active = filtered app usage, Ideal = filtered AFK, Total = both.
+            const selectedDateKey = dateKey(date);
+            const cardAlignedChart = normalizedChart.map((row) => (
+                dateKey(row.date) === selectedDateKey
+                    ? {
+                        ...row,
+                        active: activeAppMinutes,
+                        afk: normalizedAggregate.afkDurationMinutes,
+                        total: activeAppMinutes + normalizedAggregate.afkDurationMinutes
+                    }
+                    : row
+            ));
+
             const initialApps = recalculateAppPercents(appRows.slice(0, PAGE_SIZE));
             setLoginTime(login || '--:--');
             const hasSelectedModeData = normalizedAggregate.totalDurationMinutes > 0
@@ -872,7 +890,8 @@ useEffect(() => {
                 userId: selectedUserId,
                 appName: selectedAppName,
                 page: 1,
-                take: 2147483647
+                take: 2147483647,
+                usageType: selectedUsageType
             })
         ]);
 
@@ -881,9 +900,12 @@ useEffect(() => {
             return appName.toLowerCase() === selectedAppName.toLowerCase();
         });
 
-        const titleRows = arrayValue(titleDetailsResult).filter((title) => (
-            matchesUsageType(title, selectedUsageType)
-        ));
+        const detailRows = arrayValue(titleDetailsResult);
+        // The endpoint filters by usageType. Some API versions do not include
+        // StartMode in the returned DTO, so only filter again when that field exists.
+        const titleRows = selectedUsageType !== 'all' && detailRows.some(hasUsageType)
+            ? detailRows.filter((title) => matchesUsageType(title, selectedUsageType))
+            : detailRows;
         const selectedAppTitles = titleRows.length > 0 ? titleRows : fallbackSelectedAppTitles;
         const selectedApp = allTopApps.find(
             (app) => app.name?.toLowerCase() === selectedAppName.toLowerCase()
@@ -934,7 +956,6 @@ useEffect(() => {
 }, [
     selectedAppName,
     selectedDate,
-    selectedUsageType,
     selectedUsageType,
     selectedUserId,
     allAppTitleRows,
