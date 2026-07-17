@@ -465,15 +465,21 @@ export const sendTokenToWorker = createAsyncThunk(
     'user/sendTokenToWorker',
     async (_, { rejectWithValue }) => {
         try {
-            const token = localStorage.getItem("authToken");
+            const configuredWorkerUrl = import.meta.env.VITE_WORKER_URL?.trim();
+            const isLocalBrowser = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+            const workerUrl = configuredWorkerUrl || (isLocalBrowser ? 'http://localhost:5055' : '');
 
-            console.log("Token from localStorage:", token);
+            // The desktop worker is local-only. A deployed website must not call
+            // localhost because that points to the visitor's own computer.
+            if (!workerUrl) return true;
+
+            const token = localStorage.getItem("authToken");
 
             if (!token) {
                 return rejectWithValue("No auth token found in localStorage");
             }
 
-            const response = await fetch("http://localhost:5055/set-token", {
+            const response = await fetch(`${workerUrl.replace(/\/$/, '')}/set-token`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

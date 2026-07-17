@@ -280,6 +280,7 @@ const {
     getDayUsageCount,
     getTodaysStartTracker,
     sendTokenToWorker,
+    getCategoryByAppName,
     getGroupedCategoryKeywords,
     addAfkLog,
     currentUser
@@ -459,6 +460,65 @@ const {
             .sort((a, b) => b.duration - a.duration);
     };
 
+    const getTitlesMatchingTopAppDuration = (titles, topAppDuration) => {
+        if (!titles?.length || topAppDuration <= 0) {
+            return [];
+        }
+
+        const groupedTitles = Object.values(titles.reduce((acc, item) => {
+            const title = valueOf(item, 'title', 'Title') || 'Unknown / No Window Title';
+            const duration = numberValue(valueOf(item, 'durationInMinutes', 'DurationInMinutes'));
+
+            if (duration <= 0) {
+                return acc;
+            }
+
+            if (!acc[title]) {
+                acc[title] = {
+                    title,
+                    duration: 0,
+                    color: dynamicColor(title)
+                };
+            }
+
+            acc[title].duration += duration;
+            return acc;
+        }, {}))
+            .filter((title) => title.duration > 0)
+            .sort((a, b) => b.duration - a.duration);
+
+        const titlesTotal = groupedTitles.reduce((sum, title) => sum + title.duration, 0);
+        if (titlesTotal <= 0) {
+            return [];
+        }
+
+        const targetTotalSeconds = Math.round(topAppDuration * 60);
+        const scaledTitles = groupedTitles.map((title) => {
+            const scaledSeconds = (title.duration / titlesTotal) * targetTotalSeconds;
+            const floorSeconds = Math.floor(scaledSeconds);
+
+            return {
+                ...title,
+                floorSeconds,
+                remainder: scaledSeconds - floorSeconds
+            };
+        });
+
+        const usedSeconds = scaledTitles.reduce((sum, title) => sum + title.floorSeconds, 0);
+        const remainingSeconds = targetTotalSeconds - usedSeconds;
+
+        return scaledTitles
+            .sort((a, b) => b.remainder - a.remainder)
+            .map((title, index) => ({
+                title: title.title,
+                duration: (title.floorSeconds + (index < remainingSeconds ? 1 : 0)) / 60,
+                percent: 0,
+                color: title.color
+            }))
+            .filter((title) => Math.round(title.duration * 60) > 0)
+            .sort((a, b) => b.duration - a.duration);
+    };
+
     const loadSelectedUserData = async (userId, date, usageType, role) => {
         if (!userId) return;
 
@@ -485,7 +545,7 @@ const {
 
     getAfkLogsTotal({ userId, date, userRole: role, startMode: usageType }),
     getAppTitleByUserId(userId),
-    getGroupedCategoryKeywords({ id: userId, date, page: 1, take: PAGE_SIZE, usageType }),
+    getGroupedCategoryKeywords({ id: userId, date, page: 1, take: PAGE_SIZE }),
     getTodaysStartTracker(userId)
 ]);
 
@@ -520,28 +580,6 @@ const {
             const appUsageResponse = arrayValue(appUsageResult);
             const usageCount = usageCountResult || 0;
             const allAppUsageResponse = arrayValue(allAppUsageResult);
-
-            // "All" must equal the values shown by the Automatic and Manual
-            // filters. Fetch those modes independently so each subtotal can be
-            // rounded to whole seconds before they are added.
-            let allModeActiveRows = null;
-            if (usageType === 'all') {
-                const modeResults = await Promise.allSettled([
-                    getAppUsageByUserId({
-                        userId, date, page: 1, take: 2147483647,
-                        usageType: 'automatic', userRole: role
-                    }),
-                    getAppUsageByUserId({
-                        userId, date, page: 1, take: 2147483647,
-                        usageType: 'manual', userRole: role
-                    })
-                ]);
-
-                allModeActiveRows = {
-                    automatic: arrayValue(settledValue(modeResults[0], [])),
-                    manual: arrayValue(settledValue(modeResults[1], []))
-                };
-            }
             const selectedDayTitleRows = arrayValue(appTitlesResult).filter((item) => {
                 const start = valueOf(item, 'startTime', 'StartTime');
                 return isWithinLocalDay(start, date) && matchesUsageType(item, usageType);
@@ -666,40 +704,17 @@ const {
     : appUsageResponse.length > 0
         ? appUsageResponse
         : historicalAppUsage;
-const sumActiveMinutes = (rows) => rows.reduce((sum, app) => (
-    sum + numberValue(valueOf(
+const activeAppMinutes = allAppRowsForTotal.reduce((sum, app) => {
+    return sum + numberValue(valueOf(
         app,
         'durationInMinutes',
         'DurationInMinutes',
         'totalDurationInMinutes',
         'TotalDurationInMinutes'
-    ))
-), 0);
-
-const activeAppMinutes = allModeActiveRows
-    ? (
-        Math.round(sumActiveMinutes(allModeActiveRows.automatic) * 60)
-        + Math.round(sumActiveMinutes(allModeActiveRows.manual) * 60)
-    ) / 60
-    : sumActiveMinutes(allAppRowsForTotal);
+    ));
+}, 0);
 
 setTotalActiveAppMinutes(activeAppMinutes);
-
-            // Keep card calculations untouched. For the selected date only, copy
-            // the exact values displayed by the cards into the graph datasets.
-            // Historical graph days continue to use their existing API values.
-            const cardAlignedChart = normalizedChart.map((row) => {
-                if (dateKey(row.date) !== dateKey(date)) {
-                    return row;
-                }
-
-                return {
-                    ...row,
-                    active: activeAppMinutes,
-                    afk: afkTotalMinutes,
-                    total: activeAppMinutes + afkTotalMinutes
-                };
-            });
 
             const initialApps = recalculateAppPercents(appRows.slice(0, PAGE_SIZE));
             setLoginTime(login || '--:--');
@@ -773,8 +788,15 @@ useEffect(() => {
 
         await loadTrackingPermissions(authUser.id);
 
-        // Opening a reporting page must not create a tracking session. Tracking
-        // starts only after an explicit toggle (or in the desktop worker).
+        // Auto-start tracking if the UI would show tracking as ON
+        // This matches the same logic used in loadTrackingPermissions
+        const shouldAutoStart = (permissions.manual && !permissions.auto) || localStorage.getItem('IsOnState') === 'true';
+        if (authUser.role !== 'superadmin' && shouldAutoStart) {
+            await startDailyTracker({
+                userId: authUser.id,
+                startMode: 'automatic'
+            });
+        }
     };
 
     initializeDailyTracker();
@@ -902,22 +924,14 @@ useEffect(() => {
             return;
         }
 
-        const [titleDetailsResult, groupedCategoriesResult] = await Promise.all([
+        const [groupedCategoriesResult, titleDetailsResult] = await Promise.all([
+            getCategoryByAppName(selectedAppName),
             getAppTitleDetails({
                 date: selectedDate,
                 userId: selectedUserId,
                 appName: selectedAppName,
                 page: 1,
-                take: 2147483647,
-                usageType: selectedUsageType
-            }),
-            getGroupedCategoryKeywords({
-                id: selectedUserId,
-                date: selectedDate,
-                page: 1,
-                take: 2147483647,
-                usageType: selectedUsageType,
-                appName: selectedAppName
+                take: 2147483647
             })
         ]);
 
@@ -926,11 +940,9 @@ useEffect(() => {
             return appName.toLowerCase() === selectedAppName.toLowerCase();
         });
 
-        // AppTitle/AppDetails returns an aggregated DTO containing only
-        // title + durationInMinutes. It does not include StartMode, so applying
-        // matchesUsageType here removes every valid Manual/Automatic title.
-        // The requested usageType is already sent to the API.
-        const titleRows = arrayValue(titleDetailsResult);
+        const titleRows = arrayValue(titleDetailsResult).filter((title) => (
+            matchesUsageType(title, selectedUsageType)
+        ));
         const selectedAppTitles = titleRows.length > 0 ? titleRows : fallbackSelectedAppTitles;
         const selectedApp = allTopApps.find(
             (app) => app.name?.toLowerCase() === selectedAppName.toLowerCase()
@@ -982,10 +994,11 @@ useEffect(() => {
     selectedAppName,
     selectedDate,
     selectedUsageType,
+    selectedUsageType,
     selectedUserId,
     allAppTitleRows,
     allTopApps,
-    getGroupedCategoryKeywords,
+    getCategoryByAppName,
     getAppTitleDetails
 ]);
 
