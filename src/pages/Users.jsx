@@ -460,65 +460,6 @@ const {
             .sort((a, b) => b.duration - a.duration);
     };
 
-    const getTitlesMatchingTopAppDuration = (titles, topAppDuration) => {
-        if (!titles?.length || topAppDuration <= 0) {
-            return [];
-        }
-
-        const groupedTitles = Object.values(titles.reduce((acc, item) => {
-            const title = valueOf(item, 'title', 'Title') || 'Unknown / No Window Title';
-            const duration = numberValue(valueOf(item, 'durationInMinutes', 'DurationInMinutes'));
-
-            if (duration <= 0) {
-                return acc;
-            }
-
-            if (!acc[title]) {
-                acc[title] = {
-                    title,
-                    duration: 0,
-                    color: dynamicColor(title)
-                };
-            }
-
-            acc[title].duration += duration;
-            return acc;
-        }, {}))
-            .filter((title) => title.duration > 0)
-            .sort((a, b) => b.duration - a.duration);
-
-        const titlesTotal = groupedTitles.reduce((sum, title) => sum + title.duration, 0);
-        if (titlesTotal <= 0) {
-            return [];
-        }
-
-        const targetTotalSeconds = Math.round(topAppDuration * 60);
-        const scaledTitles = groupedTitles.map((title) => {
-            const scaledSeconds = (title.duration / titlesTotal) * targetTotalSeconds;
-            const floorSeconds = Math.floor(scaledSeconds);
-
-            return {
-                ...title,
-                floorSeconds,
-                remainder: scaledSeconds - floorSeconds
-            };
-        });
-
-        const usedSeconds = scaledTitles.reduce((sum, title) => sum + title.floorSeconds, 0);
-        const remainingSeconds = targetTotalSeconds - usedSeconds;
-
-        return scaledTitles
-            .sort((a, b) => b.remainder - a.remainder)
-            .map((title, index) => ({
-                title: title.title,
-                duration: (title.floorSeconds + (index < remainingSeconds ? 1 : 0)) / 60,
-                percent: 0,
-                color: title.color
-            }))
-            .filter((title) => Math.round(title.duration * 60) > 0)
-            .sort((a, b) => b.duration - a.duration);
-    };
-
     const loadSelectedUserData = async (userId, date, usageType, role) => {
         if (!userId) return;
 
