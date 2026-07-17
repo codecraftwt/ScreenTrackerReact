@@ -298,8 +298,7 @@ export const userService = {
     getAfkLogsTotal: async (userId, date, userRole, startMode = "all") => {
         try {
             const formattedDate = date.split('T')[0];
-            const mode = userRole.toLowerCase() === 'user' ? 'manual' : startMode;
-            const response = await api.get(`/AfkLogs/total?userId=${userId}&date=${formattedDate}&mode=${mode}`);
+            const response = await api.get(`/AfkLogs/total?userId=${userId}&date=${formattedDate}&mode=${startMode}`);
             return timeSpanToMinutes(response.data);
         } catch (error) {
             console.error('Error fetching afk logs total:', error);
@@ -317,10 +316,11 @@ export const userService = {
         }
     },
     
-    getGroupedCategoryKeywords: async (id, date, page = 1, take = 5) => {
+    getGroupedCategoryKeywords: async (id, date, page = 1, take = 5, usageType = 'all', appName = '') => {
         try {
             const formattedDate = date.split('T')[0];
-            const response = await api.get(`/CategoryKeyword/groupedCategory/${id}/${formattedDate}?page=${page}&take=${take}`);
+            const encodedAppName = encodeURIComponent(appName);
+            const response = await api.get(`/CategoryKeyword/groupedCategory/${id}/${formattedDate}?page=${page}&take=${take}&usageType=${usageType}&appName=${encodedAppName}`);
             return response.data;
         } catch (error) {
             console.error('Error fetching grouped categories:', error);
@@ -350,11 +350,11 @@ export const userService = {
         }
     },
 
-    getAppTitleDetails: async (date, userId, appName, page = 1, take = 5) => {
+    getAppTitleDetails: async (date, userId, appName, page = 1, take = 5, usageType = 'all') => {
         try {
             const formattedDate = date.split('T')[0];
             const encodedAppName = encodeURIComponent(appName);
-            const response = await api.get(`/AppTitle/AppDetails/${formattedDate}/${userId}?appName=${encodedAppName}&page=${page}&take=${take}`);
+            const response = await api.get(`/AppTitle/AppDetails/${formattedDate}/${userId}?appName=${encodedAppName}&page=${page}&take=${take}&usageType=${usageType}`);
             return response.data;
         } catch (error) {
             console.error('Error fetching app title details:', error);

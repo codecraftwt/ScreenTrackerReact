@@ -241,9 +241,12 @@ const GroupedBarChart = ({ labels, totalData, afkData, activeData, compact = fal
           },
           label: (tooltipItem) => {
             const dataValue = tooltipItem.raw;
-            const hours = Math.floor(dataValue / 60);
-            const minutes = Math.floor(dataValue % 60);
-            const seconds = Math.floor((dataValue % 1) * 60);
+            // Use the same whole-second rounding as the dashboard cards. Flooring
+            // the fractional minute made the graph display one second less.
+            const totalSeconds = Math.round(Math.max(0, Number(dataValue) || 0) * 60);
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
             return `${tooltipItem.dataset.label}: ${hours}h ${minutes}m ${seconds}s`;
           },
         },
