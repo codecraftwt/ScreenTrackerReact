@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import { useAuth } from '../features/auth/authHooks';
 import { SESSION_REDIRECT_MESSAGE_KEY } from '../services/api';
 import './Login.css';
@@ -21,8 +22,14 @@ const Login = () => {
     useEffect(() => {
         const sessionRedirectMessage = sessionStorage.getItem(SESSION_REDIRECT_MESSAGE_KEY);
         if (sessionRedirectMessage) {
-            setErrorMessage(sessionRedirectMessage);
             sessionStorage.removeItem(SESSION_REDIRECT_MESSAGE_KEY);
+            Swal.fire({
+                icon: 'warning',
+                title: 'Session ended',
+                text: sessionRedirectMessage,
+                confirmButtonText: 'OK',
+                allowOutsideClick: false
+            });
         }
 
         if (isAuthenticated) {
