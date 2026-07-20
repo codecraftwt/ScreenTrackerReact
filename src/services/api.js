@@ -5,6 +5,7 @@ const configuredBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim();
 const BASE_URL = configuredBaseUrl
     ? configuredBaseUrl.replace(/\/+$/, '')
     : 'http://10.0.3.55:90/api';
+    // :'http://localhost:5011/api';
 
 const api = axios.create({
     baseURL: BASE_URL,

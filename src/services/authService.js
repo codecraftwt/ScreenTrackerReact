@@ -20,7 +20,7 @@ export const authService = {
 
         try {
            
-            const response = await api.post('/Auth/login', { Username: username, Password: password });
+            const response = await api.post('/Auth/login', { Username: username, Password: password, SessionType: 'Web' });
             return { success: true, data: response.data };
         } catch (error) {
             return {
