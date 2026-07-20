@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../features/auth/authHooks';
+import { SESSION_REDIRECT_MESSAGE_KEY } from '../services/api';
 import './Login.css';
 
 const Login = () => {
@@ -18,6 +19,12 @@ const Login = () => {
     const isFormValid = username.trim() !== '' && password.trim() !== '';
 
     useEffect(() => {
+        const sessionRedirectMessage = sessionStorage.getItem(SESSION_REDIRECT_MESSAGE_KEY);
+        if (sessionRedirectMessage) {
+            setErrorMessage(sessionRedirectMessage);
+            sessionStorage.removeItem(SESSION_REDIRECT_MESSAGE_KEY);
+        }
+
         if (isAuthenticated) {
             navigate(redirectTo, { replace: true });
         }
