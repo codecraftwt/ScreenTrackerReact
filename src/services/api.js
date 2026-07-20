@@ -2,6 +2,8 @@ import axios from 'axios';
 import store from '../app/store';
 
 const configuredBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim();
+export const SESSION_REDIRECT_MESSAGE_KEY = 'sessionRedirectMessage';
+const OTHER_DEVICE_MESSAGE = 'You have logged in from another device.';
 const BASE_URL = configuredBaseUrl
     ? configuredBaseUrl.replace(/\/+$/, '')
     : 'http://10.0.3.55:90/api';
@@ -32,9 +34,14 @@ api.interceptors.request.use(
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response?.status === 401) {
+        const status = error.response?.status;
+        const requestUrl = String(error.config?.url || '').toLowerCase();
+        const isLoginRequest = requestUrl.includes('/auth/login');
+
+        if (status === 401 && !isLoginRequest) {
             localStorage.removeItem('authToken');
             localStorage.setItem('IsOnState', 'false');
+            sessionStorage.setItem(SESSION_REDIRECT_MESSAGE_KEY, OTHER_DEVICE_MESSAGE);
 
             if (window.location.pathname !== '/login') {
                 window.location.href = '/login';
