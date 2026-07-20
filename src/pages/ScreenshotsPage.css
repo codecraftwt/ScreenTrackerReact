@@ -1515,7 +1515,8 @@ body.dark-theme .total-duration-banner {
     width: 7px !important;
     height: 8px !important;
     border-radius: 2px !important;
-    background: var(--hs-bg-surface) !important;
+    /* Match the Windows app: empty activity slots remain visible as gray. */
+    background: #e9ecef !important;
 }
 
 .screenshots-card .activity-blocks .block.active {
