@@ -1,9 +1,9 @@
 import axios from 'axios';
+import Swal from 'sweetalert2';
 import store from '../app/store';
 
 const configuredBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim();
-export const SESSION_REDIRECT_MESSAGE_KEY = 'sessionRedirectMessage';
-const OTHER_DEVICE_MESSAGE = 'You have logged in from another device.';
+let sessionExpiredPopupOpen = false;
 const BASE_URL = configuredBaseUrl
     ? configuredBaseUrl.replace(/\/+$/, '')
     : 'http://10.0.3.55:90/api';
@@ -41,10 +41,25 @@ api.interceptors.response.use(
         if (status === 401 && !isLoginRequest) {
             localStorage.removeItem('authToken');
             localStorage.setItem('IsOnState', 'false');
-            sessionStorage.setItem(SESSION_REDIRECT_MESSAGE_KEY, OTHER_DEVICE_MESSAGE);
 
-            if (window.location.pathname !== '/login') {
-                window.location.href = '/login';
+            if (window.location.pathname !== '/login' && !sessionExpiredPopupOpen) {
+                sessionExpiredPopupOpen = true;
+                Swal.fire({
+                    title: 'Session Expired',
+                    text: 'You have logged in from another device. Please log in again.',
+                    confirmButtonText: 'OK',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    customClass: {
+                        popup: 'session-expired-popup',
+                        title: 'session-expired-title',
+                        htmlContainer: 'session-expired-message',
+                        actions: 'session-expired-actions',
+                        confirmButton: 'session-expired-confirm'
+                    }
+                }).then(() => {
+                    window.location.href = '/login';
+                });
             }
         }
 
