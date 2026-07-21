@@ -8,6 +8,7 @@ const BASE_URL = configuredBaseUrl
     ? configuredBaseUrl.replace(/\/+$/, '')
     : 'http://10.0.3.55:90/api';
     // :'http://localhost:5011/api';
+    // :'http://screentracker.walstargroup.org/api';
 
 const api = axios.create({
     baseURL: BASE_URL,

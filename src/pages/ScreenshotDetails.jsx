@@ -178,6 +178,13 @@ const ScreenshotDetails = () => {
     };
 
     const backToScreenshots = () => {
+        const historyIndex = window.history.state?.idx;
+
+        if (typeof historyIndex === 'number' && historyIndex > 0) {
+            navigate(-1);
+            return;
+        }
+
         const selectedDate = queryDate || formatDateParam(getValue(screenshot, 'captureTime', 'CaptureTime')) || '';
         const params = new URLSearchParams({ usageType });
 
@@ -185,7 +192,7 @@ const ScreenshotDetails = () => {
             params.set('viewedUserId', targetUserId);
         }
 
-        navigate(`/screenshots/${selectedDate}?${params.toString()}`);
+        navigate(`/screenshots/${selectedDate}?${params.toString()}`, { replace: true });
     };
 
     if (errorMessage && !screenshot) {
@@ -205,9 +212,14 @@ const ScreenshotDetails = () => {
         <div className="screenshot-details container mt-3">
             {errorMessage ? <p className="text-danger">{errorMessage}</p> : null}
 
-            <button onClick={backToScreenshots} className="btn btn-primary screenshot-details-back">
-                <i className="fa fa-arrow-left me-2"></i>
-                Back
+            <button
+                type="button"
+                onClick={backToScreenshots}
+                className="btn-back screenshots-back-btn"
+                aria-label="Go back to the screenshots page"
+            >
+                <i className="fas fa-arrow-left" aria-hidden="true"></i>
+                <span>Back</span>
             </button>
 
             <div className="row">
