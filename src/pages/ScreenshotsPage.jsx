@@ -327,12 +327,32 @@ const ScreenshotsPage = () => {
         setCalendarMonth(new Date(value));
         setIsCalendarOpen(false);
     };
+
+    const goBack = () => {
+        const historyIndex = window.history.state?.idx;
+
+        if (typeof historyIndex === 'number' && historyIndex > 0) {
+            navigate(-1);
+            return;
+        }
+
+        navigate('/users', { replace: true });
+    };
   
 
     return (
         <div className="screenshots-shell container mt-3">
             <div className="screenshots-card card shadow-sm">
                 <div className="screenshots-toolbar card-header">
+                    <button
+                        type="button"
+                        className="btn-back screenshots-back-btn"
+                        onClick={goBack}
+                        aria-label="Go back to the previous page"
+                    >
+                        <i className="fas fa-arrow-left" aria-hidden="true"></i>
+                        <span>Back</span>
+                    </button>
                     <div className="screenshots-date-wrap" ref={calendarRef}>
                         <button
                             type="button"

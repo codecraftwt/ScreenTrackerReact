@@ -823,6 +823,14 @@ span.mx-2 {
     box-shadow: var(--hs-shadow-sm) !important;
 }
 
+.screenshots-back-btn {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
 .screenshots-refresh-btn i,
 .screenshots-refresh-btn span {
     color: var(--hs-text-on-color) !important;
@@ -1006,7 +1014,8 @@ body.dark-theme .total-duration-banner {
     }
 
     .screenshots-date-wrap,
-    .screenshots-refresh-btn {
+    .screenshots-refresh-btn,
+    .screenshots-back-btn {
         width: 100%;
     }
 

@@ -3,11 +3,6 @@
     color: var(--hs-text-primary);
 }
 
-.screenshot-details-back {
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
 .screenshot-details-image-wrap {
     position: relative;
 }
