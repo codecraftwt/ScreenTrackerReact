@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 import { useUser } from '../features/user/userHooks';
 import { decodeToken } from '../utils/jwtHelper';
 import './AdminUsers.css';
+import { PageHeaderActions } from './SharedFilters';
 
 const CLAIMS = {
     id: 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier',
@@ -248,16 +249,23 @@ useEffect(() => {
 
     return (
         <div className="admin-users-container">
+            {hasPermission && users && (
+                <PageHeaderActions>
+                    <div className="user-list-header-actions">
+                        <span className="user-list-admin-name">{valueOf(adminInfo, 'username', 'Username') || 'Admin'}</span>
+                        <span className="user-list-count"><strong>{users.length}</strong> total</span>
+                        <span className="user-list-count active"><strong>{users.filter((user) => valueOf(user, 'isActive', 'IsActive') === true).length}</strong> active</span>
+                        <span className="user-list-count inactive"><strong>{users.filter((user) => valueOf(user, 'isActive', 'IsActive') !== true).length}</strong> inactive</span>
+                        <button className="btn-add-user" onClick={navigateToAddUser}><i className="bi bi-plus-circle"></i> Add User</button>
+                    </div>
+                </PageHeaderActions>
+            )}
             <div className="right-panel">
                 <div className="form-container">
                     <div className="page-header">
                         <button className="btn-back" onClick={goBack}>
                             <i className="bi bi-arrow-left"></i> Back
                         </button>
-                        <div className="header-title">
-                            <h2 className="text-center mb-4"><i className="bi bi-people"></i> Users of {valueOf(adminInfo, 'username', 'Username') || 'Admin'}</h2>
-                            <p className="subtitle text-center">All users created by this admin</p>
-                        </div>
                     </div>
 
                     {isLoading ? (
@@ -272,12 +280,6 @@ useEffect(() => {
                         </div>
                     ) : (
                         <>
-                            <div className="admin-actions">
-                                <button className="btn-add-user" onClick={navigateToAddUser}>
-                                    <i className="bi bi-plus-circle"></i> Add User
-                                </button>
-                            </div>
-
                             {users === null || users.length === 0 ? (
                                 <div className="empty-state">
                                     <i className="bi bi-person-x"></i>
@@ -286,32 +288,6 @@ useEffect(() => {
                                 </div>
                             ) : (
                                 <>
-                                    <div className="admin-info-card">
-                                        <div className="admin-avatar-large">
-                                            {initials(valueOf(adminInfo, 'firstName', 'FirstName'), valueOf(adminInfo, 'lastName', 'LastName'), 'A')}
-                                        </div>
-                                        <div className="admin-details">
-                                            <h4>{valueOf(adminInfo, 'firstName', 'FirstName') || ''} {valueOf(adminInfo, 'lastName', 'LastName') || ''}</h4>
-                                            <p><i className="bi bi-person"></i> {valueOf(adminInfo, 'username', 'Username')}</p>
-                                            <p><i className="bi bi-envelope"></i> {valueOf(adminInfo, 'email', 'Email')}</p>
-                                            <p><i className="bi bi-telephone"></i> {valueOf(adminInfo, 'phoneNumber', 'PhoneNumber')}</p>
-                                        </div>
-                                        <div className="admin-stats">
-                                            <div className="stat-box">
-                                                <span className="stat-number">{users.length}</span>
-                                                <span className="stat-label">Total Users</span>
-                                            </div>
-                                            <div className="stat-box active">
-                                                <span className="stat-number">{users.filter((user) => valueOf(user, 'isActive', 'IsActive') === true).length}</span>
-                                                <span className="stat-label">Active</span>
-                                            </div>
-                                            <div className="stat-box inactive">
-                                                <span className="stat-number">{users.filter((user) => valueOf(user, 'isActive', 'IsActive') !== true).length}</span>
-                                                <span className="stat-label">Inactive</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
                                     <div className="table-responsive">
                                         <table className="users-table">
                                             <thead>

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useUser } from '../features/user/userHooks';
 import { decodeToken } from '../utils/jwtHelper';
 import './ActiveUsers.css';
+import { PageHeaderActions } from './SharedFilters';
 
 const valueOf = (entity, ...keys) => {
     for (const key of keys) {
@@ -129,33 +130,19 @@ const ActiveUsers = () => {
 
     return (
         <div className="active-users-container">
+            <PageHeaderActions>
+                <div className="active-header-summary">
+                    <span className="status-dot"></span>
+                    <strong>{activeUsers.length}</strong>
+                    <span>active now</span>
+                </div>
+            </PageHeaderActions>
             <div className="right-panel">
                 <div className="form-container">
                     <div className="page-header">
                         <button className="btn-back" onClick={goBack}>
                             <i className="bi bi-arrow-left"></i> Back
                         </button>
-                        <div className="header-title">
-                            <h2><i className="bi bi-person-check"></i> Active Users</h2>
-                            <p className="subtitle">Currently active and tracked users</p>
-                        </div>
-                    </div>
-
-                    <div className="admin-info-card">
-                        <div className="admin-avatar-large">
-                            <i className="bi bi-people-fill" style={{ fontSize: '1.8rem' }}></i>
-                        </div>
-                        <div className="admin-details">
-                            <h4>Active Users Overview</h4>
-                            <p><i className="bi bi-person-check"></i> Users currently being tracked in real-time</p>
-                            <p><i className="bi bi-graph-up"></i> Monitor user activity and status</p>
-                        </div>
-                        <div className="admin-stats">
-                            <div className="stat-box active">
-                                <span className="stat-number">{activeUsers.length}</span>
-                                <span className="stat-label">Active</span>
-                            </div>
-                        </div>
                     </div>
 
                     {activeUsers.length === 0 ? (

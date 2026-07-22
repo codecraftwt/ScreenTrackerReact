@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import Select from 'react-select';
 import { useUser } from '../features/user/userHooks';
 import GroupedBarChart from './GroupedBarChart';
+import { PageHeaderActions } from './SharedFilters';
 
 import './Users.css';
 
@@ -1192,32 +1193,33 @@ const totalTime = formatDuration(totalActiveAppMinutes + idealMinutes);
 
     return (
         <div className={`dashboard-page p-4 ${isAdmin ? 'dashboard-admin-page' : 'dashboard-user-page'}`} style={{ minHeight: '100vh' }}>
-            <div className="dashboard-page-header">
-                <div>
-                    <p className="dashboard-eyebrow">Time and activity overview</p>
-                    <h1>Dashboard</h1>
-                    <p className="dashboard-subtitle">
-                        {selectedUsername ? `Viewing ${selectedUsername}` : 'Select a user to view work time, activity, screenshots, and app usage.'}
-                    </p>
+            <div className="dashboard-sticky-header">
+                <div className="dashboard-page-header">
+                    <div>
+                        <p className="dashboard-eyebrow">Time and activity overview</p>
+                        <h1>Dashboard</h1>
+                        <p className="dashboard-subtitle">
+                            {selectedUsername ? `Viewing ${selectedUsername}` : 'Select a user to view work time, activity, screenshots, and app usage.'}
+                        </p>
+                    </div>
+                    <div className="dashboard-header-meta">
+                        <span>{selectedDate}</span>
+                        <strong>{selectedUsageTypeOption.label}</strong>
+                    </div>
+                    <div className="dashboard-first-card-actions">
+                        <button
+                            className="theme-toggle-single"
+                            onClick={onProfileThemeToggle}
+                            aria-label={profileIsDarkTheme ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
+                            data-dashboard-tooltip={profileIsDarkTheme ? 'Light theme' : 'Dark theme'}
+                        >
+                            <i className={`fas ${profileIsDarkTheme ? 'fa-sun' : 'fa-moon'}`}></i>
+                        </button>
+                    </div>
                 </div>
-                <div className="dashboard-header-meta">
-                    <span>{selectedDate}</span>
-                    <strong>{selectedUsageTypeOption.label}</strong>
-                </div>
-                <div className="dashboard-first-card-actions">
-                    <button
-                        className="theme-toggle-single"
-                        onClick={onProfileThemeToggle}
-                        aria-label={profileIsDarkTheme ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
-                        data-dashboard-tooltip={profileIsDarkTheme ? 'Light theme' : 'Dark theme'}
-                    >
-                        <i className={`fas ${profileIsDarkTheme ? 'fa-sun' : 'fa-moon'}`}></i>
-                    </button>
-                </div>
-            </div>
 
-            {isAdmin && (
-                <div className="selectbox">
+                <PageHeaderActions><div className="dashboard-header-filter-actions">{isAdmin && (
+                    <div className="selectbox">
                     {isSuperAdmin && (
                         <div className="toolbar-section">
                             <label className="label">Select Admin</label>
@@ -1280,8 +1282,18 @@ const totalTime = formatDuration(totalActiveAppMinutes + idealMinutes);
                             </div>
                         </div>
                     )}
-                </div>
-            )}
+                    </div>
+                )}
+                    <button
+                        className="theme-toggle-single"
+                        onClick={onProfileThemeToggle}
+                        aria-label={profileIsDarkTheme ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
+                        data-dashboard-tooltip={profileIsDarkTheme ? 'Light theme' : 'Dark theme'}
+                    >
+                        <i className={`fas ${profileIsDarkTheme ? 'fa-sun' : 'fa-moon'}`}></i>
+                    </button>
+                </div></PageHeaderActions>
+            </div>
 
             {selectedUserId > 0 && (
                 <div className="stitch-container">
@@ -1362,7 +1374,7 @@ const totalTime = formatDuration(totalActiveAppMinutes + idealMinutes);
                             </div>
                         </div>
 
-                        <div className="toolbar-center">
+                        {/* <div className="toolbar-center">
                             {shouldShowTrackingButton && (
                                  <div className="toolbar-section toolbar-section-tracker">
                                     <label className="label">Tracking Status</label>
@@ -1381,7 +1393,7 @@ const totalTime = formatDuration(totalActiveAppMinutes + idealMinutes);
                                     )}
                                 </div>
                             )}
-                        </div>
+                        </div> */}
 
                         <div className="toolbar-right">
                             <div className="btn-group" role="group" aria-label="Toolbar Actions">
