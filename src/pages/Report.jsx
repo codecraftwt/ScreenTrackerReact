@@ -3,6 +3,7 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useUser } from '../features/user/userHooks';
 import { decodeToken } from '../utils/jwtHelper';
 import './Report.css';
+import { PageHeaderActions } from './SharedFilters';
 import Select from 'react-select';
 
 const PAGE_SIZE = 10;
@@ -157,6 +158,7 @@ const Report = () => {
     const [trackers, setTrackers] = useState(null);
     const [totalRecords, setTotalRecords] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
+
 
     const userRole = authUser?.role || '';
     const canFilterUsers = userRole === 'admin' || userRole === 'superadmin';
@@ -417,21 +419,16 @@ useEffect(() => {
                     <div></div>
                 </div>
 
-                <div className="filters">
+                <PageHeaderActions><div className="filters">
                     <div className="filters-row">
-                        <input
-                            type="date"
-                            className="input-date"
-                            value={fromDate}
-                            onChange={(event) => setFromDate(event.target.value)}
-                        />
-                        <span className="to-text">to</span>
-                        <input
-                            type="date"
-                            className="input-date"
-                            value={toDate}
-                            onChange={(event) => setToDate(event.target.value)}
-                        />
+                        <div className="report-filter-field">
+                            <label htmlFor="report-from-date">From</label>
+                            <input id="report-from-date" type="date" className="input-date" value={fromDate} onChange={(event) => setFromDate(event.target.value)} />
+                        </div>
+                        <div className="report-filter-field">
+                            <label htmlFor="report-to-date">To</label>
+                            <input id="report-to-date" type="date" className="input-date" value={toDate} onChange={(event) => setToDate(event.target.value)} />
+                        </div>
 
                         {canFilterUsers && (
                             <>
@@ -480,8 +477,8 @@ useEffect(() => {
                                     </>
                                 )}
 
-                                <label className="labels-colors" htmlFor="user-dropdown">Select User</label>
-                              <div style={{ minWidth: '240px' }} className="ms-2">
+                                <div className="report-filter-field"><label className="labels-colors" htmlFor="user-dropdown">Select User</label>
+                              <div style={{ minWidth: '240px' }}>
     <Select
         inputId="user-dropdown"
         className="report-searchable-select"
@@ -521,10 +518,10 @@ useEffect(() => {
         placeholder="Search User..."
         isSearchable
     />
-</div>
+</div></div>
 
-                                <label className="labels-colors" htmlFor="usage-type-dropdown">Usage Type</label>
-                                <div style={{ minWidth: '180px' }} className="ms-2">
+                                <div className="report-filter-field"><label className="labels-colors" htmlFor="usage-type-dropdown">Usage Type</label>
+                                <div style={{ minWidth: '180px' }}>
                                     <Select
                                         inputId="usage-type-dropdown"
                                         className="report-searchable-select"
@@ -535,15 +532,12 @@ useEffect(() => {
                                         placeholder="Search Type..."
                                         isSearchable
                                     />
-                                </div>
+                                </div></div>
                             </>
                         )}
 
-                        <button className="btn-load ms-2" onClick={() => loadHistory(1)}>
-                            <i className="fas fa-cloud-download-alt"></i> Load
-                        </button>
                     </div>
-                </div>
+                </div></PageHeaderActions>
 
                 {trackers === null ? (
                     <div className="loading">Loading...</div>

@@ -4,6 +4,7 @@ import { useUser } from '../features/user/userHooks';
 import { decodeToken } from '../utils/jwtHelper';
 import Select from 'react-select';
 import './Settings.css';
+import { PageHeaderActions } from './SharedFilters';
 
 const Settings = () => {
     const navigate = useNavigate();
@@ -250,12 +251,17 @@ const Settings = () => {
         value: getId(admin),
         label: getUsername(admin)
     }));
-    const userOptions = users.map(user => ({
-        value: getId(user),
-        label: getUsername(user)
-    }));
+    const userOptions = [
+        { value: 0, label: 'All Users' },
+        ...users.map(user => ({
+            value: getId(user),
+            label: getUsername(user)
+        }))
+    ];
     const selectedAdminOption = adminOptions.find(option => option.value === Number(selectedAdminId)) || null;
-    const selectedUserOption = userOptions.find(option => option.value === Number(selectedUserId)) || null;
+    const selectedUserOption = users.length > 0
+        ? userOptions.find(option => option.value === Number(selectedUserId || 0)) || userOptions[0]
+        : null;
 
     const updateUserInLists = (userId, updates) => {
         const applyUpdates = (list) => list.map(user => (
@@ -335,6 +341,7 @@ const Settings = () => {
                 <h1>User Management</h1>
             </div>
 
+            <PageHeaderActions><div className="settings-header-filters">
             {isSuperAdmin && (
                 <div className="admin-selection mb-3">
                     <label>Select Admin:</label>
@@ -369,6 +376,7 @@ const Settings = () => {
                     />
                 </div>
             )}
+            </div></PageHeaderActions>
 
             <div className="user-management-card">
                 {/* <div className="search-container mb-3">

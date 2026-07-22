@@ -1164,8 +1164,8 @@ body {
     background-color: var(--hs-bg-elevated);
 }
 
-.select2-search--dropdown {
-}
+/* .select2-search--dropdown {
+} */
 
 .select2-container--default {
     background-color: transparent;
@@ -2327,7 +2327,7 @@ body {
 .dashboard-page {
     width: 100% !important;
     max-width: 100% !important;
-    overflow-x: hidden !important;
+    overflow-x: clip !important;
 }
 
 .dashboard-page .stitch-container,
@@ -3163,6 +3163,20 @@ body {
     row-gap: 0 !important;
 }
 
+/* Keep the dashboard overview and filters visible while the main panel scrolls. */
+.dashboard-page .dashboard-sticky-header {
+    display: none !important;
+    position: sticky;
+    top: 0;
+    z-index: 6000;
+    display: flex;
+    flex: 0 0 100%;
+    width: 100%;
+    align-items: stretch;
+    gap: 16px;
+    background: var(--hs-bg-page);
+}
+
 .dashboard-page .dashboard-page-header {
     float: none !important;
     flex: 0 0 calc(50% - 8px) !important;
@@ -3195,6 +3209,11 @@ body {
 }
 
 @media (max-width: 1200px) {
+    .dashboard-page .dashboard-sticky-header {
+        flex-direction: column;
+        gap: 0;
+    }
+
     .dashboard-page .dashboard-page-header,
     .dashboard-page .selectbox {
         float: none !important;
