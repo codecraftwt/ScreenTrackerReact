@@ -165,7 +165,7 @@ const ScreenshotDetails = () => {
         if (relativeScreenshot?.id || relativeScreenshot?.Id) {
             const nextId = getValue(relativeScreenshot, 'id', 'Id');
             const selectedDate = queryDate || dateParam;
-            navigate(`/screenshot-details/${nextId}?date=${selectedDate}&usageType=${usageType}&viewedUserId=${targetUserId}`, { replace: false });
+            navigate(`/screenshot-details/${nextId}?date=${selectedDate}&usageType=${usageType}&viewedUserId=${targetUserId}`, { replace: true });
             return;
         }
 
@@ -177,23 +177,32 @@ const ScreenshotDetails = () => {
         }
     };
 
-    const backToScreenshots = () => {
-        const historyIndex = window.history.state?.idx;
+const backToScreenshots = () => {
+    const historyIndex = window.history.state?.idx;
 
-        if (typeof historyIndex === 'number' && historyIndex > 0) {
-            navigate(-1);
-            return;
-        }
+    /* Go back 1 step in history (like navigationHistory.goBack) */
+    if (typeof historyIndex === 'number' && historyIndex > 0) {
+        navigate(-1);
+        return;
+    }
 
-        const selectedDate = queryDate || formatDateParam(getValue(screenshot, 'captureTime', 'CaptureTime')) || '';
-        const params = new URLSearchParams({ usageType });
+    /* Fallback: navigate to screenshots page (same as Windows app) */
+    const selectedDate =
+        queryDate ||
+        formatDateParam(getValue(screenshot, 'captureTime', 'CaptureTime')) ||
+        '';
 
-        if (targetUserId) {
-            params.set('viewedUserId', targetUserId);
-        }
+    const params = new URLSearchParams({ usageType });
 
-        navigate(`/screenshots/${selectedDate}?${params.toString()}`, { replace: true });
-    };
+    if (targetUserId) {
+        params.set('viewedUserId', targetUserId);
+    }
+
+    navigate(
+        `/screenshots/${selectedDate}?${params.toString()}`,
+        { replace: true }
+    );
+};
 
     if (errorMessage && !screenshot) {
         return <p className="text-danger mt-3">{errorMessage}</p>;
